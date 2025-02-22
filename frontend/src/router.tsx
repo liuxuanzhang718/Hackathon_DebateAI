@@ -1,9 +1,9 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
 
-import Lobby from './Lobby';
-import AgentTraining from './AgentTraining';
-import Tutorial from './Tutorial';
-import Account from './Account';
+import Lobby from './pages/Lobby';
+import AgentTraining from './pages/AgentTraining';
+import Tutorial from './pages/Tutorial';
+// import Account from './Account';
 
 function AppRouter() {
   return (
@@ -12,7 +12,7 @@ function AppRouter() {
         <Route path="/lobby" element={<Lobby />} />
         <Route path="/agent-training" element={<AgentTraining />} />
         <Route path="/tutorial" element={<Tutorial />} />
-        <Route path="/account" element={<Account />} />
+        {/* <Route path="/account" element={<Account />} /> */}
       </Routes>
     </Router>
   );

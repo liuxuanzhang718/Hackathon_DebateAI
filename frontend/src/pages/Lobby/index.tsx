@@ -1,13 +1,13 @@
 import React from "react";
 import { useNavigate } from "react-router-dom";
-import image2 from "../assets/image2.png";
-import polygon8 from "../assets/Polygon8.svg";
-import polygon9 from "../assets/Polygon9.svg";
+import image2 from "../../assets/image2.png";
+import polygon8 from "../../assets/Polygon8.svg";
+import polygon9 from "../../assets/Polygon9.svg";
 import styles from "./Lobby.module.css";
+
 
 const Lobby: React.FC = () => {
   const navigate = useNavigate();
-
   return (
     <div className={styles.lobby}>
       

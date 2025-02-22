@@ -12,7 +12,7 @@
 
 /* Left */
 .overlap {
-  background-image: url("../assets/image1.png");
+  background-image: url("../../assets/image1.png");
   background-position: 50% 50%;
   background-size: cover;
   height: 682px;
@@ -193,7 +193,7 @@
   height: 11px;
   width: 10px;
   position: absolute;
-  top: 70px;
+  top: 72px;
   left: 449px;
 }
 
@@ -202,6 +202,6 @@
   height: 11px;
   width: 10px;
   position: absolute;
-  top: 70px;
+  top: 72px;
   left: 591px;
 }

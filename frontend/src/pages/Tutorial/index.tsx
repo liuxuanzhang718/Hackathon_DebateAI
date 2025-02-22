@@ -15,6 +15,7 @@ const Tutorial: React.FC = () => {
   return (
     <div className="tutorial-container">
       <h2>Tutorial</h2>
+      
       <p>Learn basic logic symbols:</p>
       <div className="symbol-list">
         {logicSymbols.map((s) => (

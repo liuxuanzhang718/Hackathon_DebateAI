@@ -14,6 +14,7 @@ class DeepSeekClient(LLMClient):
         response = self.client.chat.completions.create(
             model="deepseek-reasoner",
             messages=messages,
-            max_tokens=200
+            max_tokens=200,
+            temperature=0.1 # lower temperature for more consistent response
         )
         return response.choices[0].message.content

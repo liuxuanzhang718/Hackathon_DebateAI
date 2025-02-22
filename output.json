@@ -1,0 +1,41 @@
+{
+  "text": "If it rains, then the ground is wet.",
+  "logic": {
+    "premises": [
+      {
+        "id": "p1",
+        "text": "It rains"
+      },
+      {
+        "id": "p2",
+        "text": "The ground is wet"
+      }
+    ],
+    "conclusions": [
+      {
+        "id": "c1",
+        "text": "If it rains, then the ground is wet",
+        "expr": "p1 → p2",
+        "from": [
+          "p1"
+        ],
+        "to": [
+          "p2"
+        ]
+      }
+    ],
+    "relations": [
+      {
+        "from": "p1",
+        "to": "p2",
+        "type": "if then"
+      }
+    ],
+    "fallacies": [
+      {
+        "type": "None",
+        "description": "The statement is a straightforward conditional with no apparent logical fallacies."
+      }
+    ]
+  }
+}

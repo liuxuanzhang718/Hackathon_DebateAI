@@ -12,8 +12,9 @@ class OpenAIClient(LLMClient):
             {"role": "user", "content": prompt}
         ]
         response = self.client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4o",
             messages=messages,
-            max_tokens=200
+            max_tokens=200,
+            temperature=0.1
         )
         return response.choices[0].message.content

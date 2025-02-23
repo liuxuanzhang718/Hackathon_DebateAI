@@ -36,37 +36,37 @@ router = APIRouter()
 # Predefined debate topics for training sessions
 DEBATE_TOPICS = [
     {
-        "id": "1",
+        "id": 1,
         "title": "Climate Policy",
         "description": "Renewable energy must be adopted immediately to protect our planet."
     },
     {
-        "id": "2",
+        "id": 2,
         "title": "Artificial Intelligence",
         "description": "Strict AI ethics are needed to safeguard human rights."
     },
     {
-        "id": "3",
+        "id": 3,
         "title": "Healthcare Reform",
         "description": "Universal healthcare should be affordable and accessible."
     },
     {
-        "id": "4",
+        "id": 4,
         "title": "Economic Policy",
         "description": "Progressive taxation is key to reducing income inequality."
     },
     {
-        "id": "5",
+        "id": 5,
         "title": "Education Systems",
         "description": "Modern education must leverage tech and personalization."
     },
     {
-        "id": "6",
+        "id": 6, 
         "title": "Global Security",
         "description": "International cooperation and strong defense are essential."
     },
     {
-        "id": "7",
+        "id": 7,
         "title": "Social Justice",
         "description": "Eliminating bias and ensuring equal rights is vital."
     }

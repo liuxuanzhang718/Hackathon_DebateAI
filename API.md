@@ -70,14 +70,59 @@
 
 ## 2. Agent Training API
 
-### 2.1 开始训练会话
+### 2.1 获取辩论主题列表
+**请求方法：** `GET`  
+**路径：** `/agent-training/topics`
+
+**响应示例：**
+```json
+[
+    {
+        "id": "1",
+        "title": "Climate Policy",
+        "description": "Renewable energy must be adopted immediately to protect our planet."
+    },
+    {
+        "id": "2",
+        "title": "Artificial Intelligence",
+        "description": "Strict AI ethics are needed to safeguard human rights."
+    },
+    {
+        "id": "3",
+        "title": "Healthcare Reform",
+        "description": "Universal healthcare should be affordable and accessible."
+    },
+    {
+        "id": "4",
+        "title": "Economic Policy",
+        "description": "Progressive taxation is key to reducing income inequality."
+    },
+    {
+        "id": "5",
+        "title": "Education Systems",
+        "description": "Modern education must leverage tech and personalization."
+    },
+    {
+        "id": "6",
+        "title": "Global Security",
+        "description": "International cooperation and strong defense are essential."
+    },
+    {
+        "id": "7",
+        "title": "Social Justice",
+        "description": "Eliminating bias and ensuring equal rights is vital."
+    }
+]
+```
+
+### 2.2 开始训练会话
 **请求方法：** `POST`  
 **路径：** `/agent-training/start`
 
 **请求体：**
 ```json
 {
-    "topic_id": "climate_change",
+    "topic_id": "1",  // 主题 ID（1-7）
     "user_side": "supporting"  // 可选值: "supporting" 或 "opposing"
 }
 ```
@@ -87,15 +132,15 @@
 {
     "conversation_id": "6bb99a33-0674-41a2-8deb-d6e756bfc759",
     "topic": {
-        "id": "climate_change",
-        "title": "Climate Change",
-        "description": "Global warming and climate change: causes, impacts, and solutions"
+        "id": "1",
+        "title": "Climate Policy",
+        "description": "Renewable energy must be adopted immediately to protect our planet."
     },
     "user_side": "supporting"
 }
 ```
 
-### 2.2 提交文本回合
+### 2.3 提交文本回合
 **请求方法：** `POST`  
 **路径：** `/agent-training/round/{conversation_id}`
 
@@ -140,7 +185,7 @@
 }
 ```
 
-### 2.3 提交音频回合
+### 2.4 提交音频回合
 **请求方法：** `POST`  
 **路径：** `/agent-training/audio/{conversation_id}`  
 **Content-Type:** `multipart/form-data`
@@ -151,7 +196,7 @@
 
 **响应格式：** 与文本回合相同
 
-### 2.4 获取训练历史
+### 2.5 获取训练历史
 **请求方法：** `GET`  
 **路径：** `/agent-training/history/{conversation_id}`
 
@@ -181,7 +226,7 @@
 }
 ```
 
-### 2.5 获取逻辑链分析
+### 2.6 获取逻辑链分析
 **请求方法：** `GET`  
 **路径：** `/agent-training/logic-chain/{conversation_id}`
 
@@ -216,7 +261,7 @@
 }
 ```
 
-### 2.6 获取当前逻辑链
+### 2.7 获取当前逻辑链
 **请求方法：** `GET`  
 **路径：** `/agent-training/logic-chain/{conversation_id}/current`
 

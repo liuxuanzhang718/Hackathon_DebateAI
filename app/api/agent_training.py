@@ -36,29 +36,39 @@ router = APIRouter()
 # Predefined debate topics for training sessions
 DEBATE_TOPICS = [
     {
-        "id": "climate_change",
-        "title": "Climate Change",
-        "description": "Global warming and climate change: causes, impacts, and solutions"
+        "id": "1",
+        "title": "Climate Policy",
+        "description": "Renewable energy must be adopted immediately to protect our planet."
     },
     {
-        "id": "ai_ethics",
-        "title": "Artificial Intelligence Ethics",
-        "description": "The ethical implications of AI development and deployment"
+        "id": "2",
+        "title": "Artificial Intelligence",
+        "description": "Strict AI ethics are needed to safeguard human rights."
     },
     {
-        "id": "education_reform",
-        "title": "Education Reform",
-        "description": "Traditional education vs. modern teaching methods"
+        "id": "3",
+        "title": "Healthcare Reform",
+        "description": "Universal healthcare should be affordable and accessible."
     },
     {
-        "id": "social_media",
-        "title": "Social Media Impact",
-        "description": "The influence of social media on society and individual well-being"
+        "id": "4",
+        "title": "Economic Policy",
+        "description": "Progressive taxation is key to reducing income inequality."
     },
     {
-        "id": "universal_income",
-        "title": "Universal Basic Income",
-        "description": "The feasibility and implications of implementing universal basic income"
+        "id": "5",
+        "title": "Education Systems",
+        "description": "Modern education must leverage tech and personalization."
+    },
+    {
+        "id": "6",
+        "title": "Global Security",
+        "description": "International cooperation and strong defense are essential."
+    },
+    {
+        "id": "7",
+        "title": "Social Justice",
+        "description": "Eliminating bias and ensuring equal rights is vital."
     }
 ]
 

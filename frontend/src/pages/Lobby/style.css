@@ -16,8 +16,8 @@
 /* ====== Lobby ====== */
 .lobby {
   background-color: #000000;
-  height: 982px;
-  width: 1512px;
+  width: 100%;
+  min-height: 100vh;
   position: relative;
 
   font-family: var(--content-font-family);
@@ -29,6 +29,25 @@
   margin-left: 20px;
   margin-top: 20px;
   cursor: pointer;  
+}
+
+.frame, .frame-wrapper, .div-wrapper {
+  transition: transform 0.2s,
+              background-color 0.2s;
+}
+
+.frame:hover,
+.frame-wrapper:hover,
+.div-wrapper:hover {
+  transform: scale(1.02);
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.frame:active,
+.frame-wrapper:active,
+.div-wrapper:active {
+  transform: scale(0.98);
+  background-color: rgba(0, 0, 0, 0.7);
 }
 
 
@@ -194,6 +213,7 @@
   top: 210px;
   width: 562px;
 }
+
 
 .text-wrapper-2 {
   font-family: var(--title-font-family);

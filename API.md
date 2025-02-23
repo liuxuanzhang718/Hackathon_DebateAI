@@ -2,12 +2,13 @@
 
 ## 基础信息
 - 基础URL: `http://localhost:8000`
-- 所有请求和响应均使用 JSON 格式，除非特别说明
+- 所有请求和响应均使用 JSON 格式
 - 所有时间戳使用 ISO 8601 格式
+- 所有请求的 Content-Type 应设置为 `application/json`（除非特别说明）
 
 ## 1. Tutorial API
 
-### 1.1 获取下一个教程问题
+### 1.1 获取教程问题
 **请求方法：** `GET`  
 **路径：** `/tutorial/next-question`
 
@@ -19,9 +20,14 @@
 }
 ```
 
+**响应说明：**
+- `example`: 示例逻辑表达式的标记列表
+- `question`: 需要分析的问题表达式的标记列表
+
 ### 1.2 提交答案
 **请求方法：** `POST`  
-**路径：** `/tutorial/answer`
+**路径：** `/tutorial/answer`  
+**Content-Type:** `application/json`
 
 **请求体：**
 ```json
@@ -31,13 +37,36 @@
 }
 ```
 
-**响应示例：**
+**请求参数说明：**
+- `question_id`: 问题的唯一标识符（整数）
+- `user_answer`: 用户的答案（布尔值），表示两个逻辑表达式是否等价
+
+**响应示例（正确答案）：**
 ```json
 {
-    "correct": true,
-    "explanation": "解释文本（如果答案错误）"
+    "correct": true
 }
 ```
+
+**响应示例（错误答案）：**
+```json
+{
+    "correct": false,
+    "explanation": "The example and question have different logical structures: 'emily happy' vs 'emily has desert'."
+}
+```
+
+**错误响应：**
+```json
+{
+    "detail": "Invalid question ID"
+}
+```
+
+**响应说明：**
+- `correct`: 布尔值，表示答案是否正确
+- `explanation`: 当答案错误时提供的解释（字符串）
+- 如果问题 ID 无效，将返回 400 状态码
 
 ## 2. Agent Training API
 

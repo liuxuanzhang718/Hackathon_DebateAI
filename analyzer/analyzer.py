@@ -4,12 +4,12 @@ from analyze_logic import analyze_logic
 
 class LogicAnalyzer:
     """
-    DebateAnalyzer encapsulates the NLP analysis logic for debate arguments.
+    LogicAnalyzer encapsulates the NLP analysis logic for debate arguments.
     It uses a provided LLM client to analyze a sentence and maintains a history of previous logical expressions.
     """
     def __init__(self, llm):
         """
-        Initialize the DebateAnalyzer with the given LLM client.
+        Initialize the LogicAnalyzer with the given LLM client.
         
         Parameters:
             llm: An object with a method get_response(prompt) that interfaces with the language model.

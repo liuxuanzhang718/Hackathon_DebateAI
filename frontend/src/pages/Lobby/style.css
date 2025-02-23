@@ -10,7 +10,6 @@
   --title-2-font-size: 36px;
   --title-3-font-family: "Lato", Helvetica;
   --title-3-font-size: 28px;
-
 }
 
 /* ====== Lobby ====== */
@@ -26,12 +25,14 @@
 }
 
 .user-info-icon {
+  cursor: pointer;
   margin-left: 20px;
   margin-top: 20px;
   cursor: pointer;  
 }
 
 .frame, .frame-wrapper, .div-wrapper {
+  cursor: pointer; 
   transition: transform 0.2s,
               background-color 0.2s;
 }

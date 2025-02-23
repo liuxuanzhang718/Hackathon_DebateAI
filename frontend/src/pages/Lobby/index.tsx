@@ -15,13 +15,7 @@ const Lobby = (): JSX.Element => {
 
   return (
     <div className="lobby">
-      {/* 点击用户信息图标跳转到 AgentSetUp 页面 */}
-      <img
-        className="user-info-icon"
-        alt="User Info"
-        src={userInfoIcon}
-        onClick={() => navigate("/agentSetUp")}
-      />
+      <img className="user-info-icon" alt="User Info" src={userInfoIcon}/>
 
       <div className="main-layout">
         {/* Sphere */}

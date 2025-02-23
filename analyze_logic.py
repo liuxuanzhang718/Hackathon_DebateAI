@@ -1,104 +1,66 @@
-
-# import spacy
-
-# nlp = spacy.load("en_core_web_sm")
-
-# def analyze_logic(sentence, llm_client):
-#     # spaCy analysis for sentence structure
-#     doc = nlp(sentence)
-
-#     # Create a structure for key components and custom symbols
-#     premise = []
-#     conclusion = []
-
-#     # Iterate over tokens to identify key components and map them to symbols
-#     for token in doc:
-#         if token.dep_ == 'nsubj':  # Example: Find the subject
-#             premise.append(token.text)
-#         elif token.dep_ == 'dobj':  # Example: Find the object
-#             conclusion.append(token.text)
-#         elif token.dep_ == 'mark' and token.text.lower() == "if":
-#             # Identify "if" to represent an implication (→)
-#             premise.append("→")
-
-#     # Example: Simple implication structure (if...then...)
-#     logic_expression = f"{' '.join(premise)} → {' '.join(conclusion)}"
-
-#     # Now create the prompt for the LLM with the simplified logic
-#     prompt = f"""
-#     Given the sentence: "{sentence}",
-#     Convert the following logic structure to a symbolic representation using custom symbols (Keep the phrases; don't convert them to letters, only represent their relationship with the following symbol):
-#     - Use "→" for implication.
-#     - Use "∧" for "and" (to represent logical conjunction).
-#     - Use "¬" for "not" (to represent logical negation).
-#     - For each clause in the sentence, break it down clearly into symbolic expressions.
-
-#     Logic structure: {logic_expression}
-
-#     Example:
-#     - "More electric vehicles will reduce fuel cost" becomes "more electric vehicles → less fuel cost"
-#     - "Reduced fuel cost will reduce air pollution and carbon emissions" becomes "less fuel cost → (less air pollution ∧ less carbon emissions)" (if air pollution and carbon emissions are two distinct facts, use "∧")
-#     """
-
-#     # Get logic analysis from the LLM
-#     logic_analysis = llm_client.get_response(prompt)
-    
-#     return logic_analysis
-
 import json
 from parse_llm_output import parse_llm_output
 
-def analyze_logic(sentence: str, llm) -> dict:
-    # Construct the prompt asking the LLM to analyze the logical structure of the sentence
-    prompt = f"""
-    You are an AI assistant that analyzes the logical structure of a sentence and identifies logical errors.
-    Please analyze the logical structure of the following sentence and present your analysis in plain text with the following sections:
-    - Original Text
-    - Premises (each line starting with "- pX: premise text")
-    - Conclusions (each line starting with "- cX: conclusion text", followed by additional lines for "Expression:", "From:" and "To:")
-    - Relations (each line starting with "- pX to pY: relation type")
-    - Fallacies (each line starting with "- fallacy_type: description")
+# Common instructions for the "Logical Expression" and "Performances" sections
+COMMON_INSTRUCTIONS = """
+- Logical Expression
+  Provide the logical expression of the sentence, using logical symbols to represent their relationships.
+- Performances
+  Provide the performance analysis with the following sub-sections:
+    - Valid: True/False  
+    - Valid Explanation: Provide explanation if invalid; leave empty if valid 
+    - Sound: True/False  
+    - Sound Explanation: Provide explanation if unsound; leave empty if sound 
 
-    For example, your output might look like:
+For example, given the sentence: "If either consumer spending falls or unemployment rises, then the economy will not improve and interest rates will not rise.", your output might look like:
 
-    Original Text: Electric Vehicle will reduce fuel cost; therefore, reduce air pollution and carbon emission to reduce global warming.
+Logical Expression:
+Consumer spending falls ∨ unemployment rises → (~ economy improve ∧ interest rates rise)
 
-    Premises:
-    - p1: Electric Vehicle
-    - p2: reduce fuel cost
-    - p3: reduce air pollution
-    - p4: reduce carbon emission
-    - p5: reduce global warming
+Performances:
+Valid: True  
+Valid Explanation:  
+Sound: False  
+Sound Explanation: It's not necessarily true that consumer spending falling or unemployment rising will cause the economy to worsen.
+"""
 
-    Conclusions:
-    - c1: Electric Vehicle → reduce fuel cost → (reduce air pollution ∧ reduce carbon emission) → reduce global warming
-    Expression: p1 → p2 → (p3 ∧ p4) → p5
-    From: p1
-    To: p5
+# Overall prompt template
+PROMPT_TEMPLATE = """You are an AI assistant that analyzes the logical structure of a sentence and identifies logical errors.
+{additional_instructions}
 
-    Relations:
-    - p1 to p2: if then
-    - p2 to p3: if then
-    - p2 to p4: if then
-    - p3 to p4: or
-    - p3 to p5: if then
-    - p4 to p5: if then
+Now, analyze this sentence:
+"{sentence}"
+"""
 
-    Fallacies:
-    - causal_fallacy: Causal fallacy: assuming correlation implies causation (in English)
-    - false_dichotomy: False dichotomy: oversimplifying complex issues into either/or choices (in English)
-
-    Now, analyze this sentence:
-    "{sentence}"
+def analyze_logic(sentence: str, llm, previous_context_expressions: list = None) -> dict:
     """
+    Analyzes the logical structure of the current sentence and integrates it with previous logical expression outputs (if any),
+    returning a JSON object that meets the front-end requirements.
 
-    # Call the LLM to get the raw output
+    Parameters:
+      - sentence: The current user input as a string.
+      - llm: The interface object for the language model.
+      - previous_context_expressions: If provided, a list of logical expressions from previous analyses,
+        with each element being a string (e.g., "Consumer spending falls ∨ unemployment rises → (~ economy improve ∧ interest rates rise)").
+    
+    Returns:
+      A dictionary containing the parsed output from the LLM.
+    """
+    additional_instructions = ""
+    if previous_context_expressions and len(previous_context_expressions) > 0:
+        previous_context_str = "Previous Logical Expressions:\n"
+        # Concatenate each logical expression from the previous context into a single text block
+        for expr in previous_context_expressions:
+            previous_context_str += f"{expr}\n"
+        additional_instructions = previous_context_str + "\n" + COMMON_INSTRUCTIONS + "\nNow, please integrate the previous analysis with the new sentence and analyze it."
+    else:
+        additional_instructions = COMMON_INSTRUCTIONS
+
+    # Generate the final prompt using the template
+    prompt = PROMPT_TEMPLATE.format(additional_instructions=additional_instructions, sentence=sentence)
+
+    # Call the language model to get the raw output
     raw_response = llm.get_response(prompt)
-
-    # Try to directly parse the LLM output as JSON
-    try:
-        result = json.loads(raw_response)
-        return result
-    except Exception as e:
-        # If direct parsing fails, use the custom parsing function to convert the LLM output into the required JSON format
-        return parse_llm_output(raw_response, sentence)
+    
+    # Parse and return the LLM output as a JSON object
+    return parse_llm_output(raw_response, sentence)

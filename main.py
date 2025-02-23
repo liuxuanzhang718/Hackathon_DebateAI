@@ -7,6 +7,10 @@ if __name__ == "__main__":
     model_name = input("Enter LLM model (openai/deepseek): ").strip().lower()
     llm = get_llm_client(model_name)
 
+
+    # List to store accumulated conclusions from previous analyses
+    previous_conclusions = []
+
     # Determine the absolute path of test.json relative to the script's directory
     script_dir = os.path.dirname(os.path.abspath(__file__))
     file_path = os.path.join(script_dir, "test.json")

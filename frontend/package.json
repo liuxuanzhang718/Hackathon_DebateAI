@@ -227,5 +227,8 @@
   "keywords": [],
   "author": "Jashuu",
   "license": "ISC",
-  "description": "--- DebateAI is bootstrapped with Create React App."
+  "description": "--- DebateAI is bootstrapped with Create React App.",
+  "devDependencies": {
+    "@types/react-router-dom": "^5.3.3"
+  }
 }

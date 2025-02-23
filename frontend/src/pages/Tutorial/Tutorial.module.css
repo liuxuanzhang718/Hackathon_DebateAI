@@ -1,0 +1,243 @@
+.tutorialContainer {
+  width: 100%;
+  min-height: 100vh;
+  background-color: #000;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  font-family: var(--main-font);
+  box-sizing: border-box;
+}
+
+p {
+  font-size: 1.2rem;
+}
+
+
+
+/* ============ Top ============ */
+.topSection {
+  width: 100%;
+  padding: 12px 24px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.topBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.smallSwirlIcon {
+  width: 50px;
+  height: 50px;
+}
+
+.exitIcon {
+  width: 32px;
+  height: 32px;
+  cursor: pointer;
+}
+
+
+.swirlContainer {
+  text-align: center;
+  z-index: 0;
+}
+
+
+.swirlImage {
+  max-width: 500px;
+  width: 60%;
+  height: auto;
+  display: block;
+  margin: 0 auto;
+  z-index: -1;
+}
+
+.swirlTitle {
+  margin-top: -250px;
+  font-size: 28px;
+  font-weight: 400;
+  pointer-events: none;
+  z-index: 1;
+}
+
+/* ============ Symbols ============ */
+.middleSection {
+  width: 100%;
+  padding: 50px 20px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  z-index: 2;
+}
+
+.symbolRow {
+  display: flex;
+  gap: 60px;
+  flex-wrap: wrap;
+  margin-top: 120px; 
+  justify-content: center;
+}
+
+.symbolItem {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+}
+
+.symbolIcon {
+  width: 48px;
+  height: 48px;
+  object-fit: contain;
+}
+
+
+/* ============ Bottom Section ============ */
+.bottomSection {
+  width: 100%;
+  padding: 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  border-top: 0px solid #eaeaea;
+}
+
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: #ddd;
+  margin: 0;
+}
+
+.logicContainer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+
+.leftLogic {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-left: 180px;
+  margin-top: 10px;
+}
+
+
+.rightLogic {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+  margin-top: 12px;
+  margin-right: 230px;
+
+}
+
+.buttonRow {
+  display: flex;
+  justify-content: center;
+  gap: 26px;
+  margin-top: 15px;
+}
+
+.btn {
+  padding: 12px 24px;
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+
+.btn:hover {
+  background-color: #444;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+
+/* ============ Bottom============
+.bottomSection {
+  width: 100%;
+  padding: 0px 24px;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.divider {
+  width: 100%;
+  height: 1px;
+  background-color: #555;
+  margin: 0px 0 12px;
+}
+
+.logicContainer {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+
+.leftLogic {
+  margin-left: 100px;
+  margin-top: -50px;
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+
+.rightLogic {
+  margin-top: 20px;
+  margin-right: 300px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 8px;
+}
+
+
+.buttonRow {
+  display: flex;
+  justify-content: center;
+  gap: 26px;
+  margin-top: 12px;
+}
+
+
+.btn {
+  padding: 8px 16px;
+  background-color: #333;
+  color: #fff;
+  border: 1px solid #555;
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 1rem;
+}
+
+.btn:hover {
+  background-color: #444;
+} */

@@ -3,6 +3,7 @@
     "target": "ES6",
     "module": "ESNext",
     "jsx": "react-jsx",
+    "types": ["react", "react-dom", "react-router-dom"],
     "strict": true,
     "moduleResolution": "Node",
     "esModuleInterop": true,

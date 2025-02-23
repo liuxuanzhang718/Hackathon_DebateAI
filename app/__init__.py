@@ -1,0 +1,3 @@
+"""
+Debate Platform Application Package
+""" 

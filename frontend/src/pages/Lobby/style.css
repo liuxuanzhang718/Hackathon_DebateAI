@@ -1,0 +1,245 @@
+/* Global variale */
+:root {
+  --content-font-family: "Lato", Helvetica;
+  --content-font-size: 28px;
+  --title-font-family: "Lato", Helvetica;
+  --title-font-size: 48px;
+  --variable-collection-notselected: rgba(255, 255, 255, 0.5);
+
+  --title-2-font-family: "Lato", Helvetica;
+  --title-2-font-size: 36px;
+  --title-3-font-family: "Lato", Helvetica;
+  --title-3-font-size: 28px;
+}
+
+/* ====== Lobby ====== */
+.lobby {
+  background-color: #000000;
+  width: 100%;
+  min-height: 100vh;
+  position: relative;
+
+  font-family: var(--content-font-family);
+  font-size: var(--content-font-size);
+  color: var(--variable-collection-notselected);
+}
+
+.user-info-icon {
+  cursor: pointer;
+  margin-left: 20px;
+  margin-top: 20px;
+  cursor: pointer;  
+}
+
+.frame, .frame-wrapper, .div-wrapper {
+  cursor: pointer; 
+  transition: transform 0.2s,
+              background-color 0.2s;
+}
+
+.frame:hover,
+.frame-wrapper:hover,
+.div-wrapper:hover {
+  transform: scale(1.02);
+  background-color: rgba(0, 0, 0, 0.8);
+}
+
+.frame:active,
+.frame-wrapper:active,
+.div-wrapper:active {
+  transform: scale(0.98);
+  background-color: rgba(0, 0, 0, 0.7);
+}
+
+
+.overlap {
+  height: 465px;
+  left: 743px;
+  position: absolute;
+  top: 312px;
+  width: 689px;
+}
+
+.gradient {
+  height: 465px;
+  left: 127px;
+  position: absolute;
+  top: 0;
+  width: 455px;
+}
+
+.overlap-group {
+  height: 465px;
+  position: relative;
+}
+
+.eclipse {
+  background: linear-gradient(
+    180deg,
+    rgb(255, 123.25, 202.3) 0%,
+    rgba(255, 197.2, 110.5, 0.46) 100%
+  );
+  border-radius: 219.21px;
+  filter: blur(200px);
+  height: 438px;
+  left: 0;
+  position: absolute;
+  top: 26px;
+  width: 438px;
+}
+
+.planet {
+  background: linear-gradient(
+    180deg,
+    rgb(242.25, 47.44, 176.01) 0%,
+    rgba(245, 138, 37, 0) 100%,
+    rgb(112, 97, 163) 100%
+  );
+  border-radius: 160.4px;
+  filter: blur(100px);
+  height: 321px;
+  left: 134px;
+  position: absolute;
+  top: 0;
+  width: 321px;
+}
+
+.frame {
+  background-color: #00000091;
+  border-radius: 27px;
+  box-shadow: 0px 4px 4px #00000040;
+  height: 113px;
+  left: 0;
+  position: absolute;
+  top: 90px;
+  width: 689px;
+}
+
+.div {
+  align-items: center;
+  display: inline-flex;
+  left: 14px;
+  position: absolute;
+  top: 12px;
+}
+
+.setting {
+  height: 98px;
+  position: relative;
+  width: 98px;
+}
+
+.text-wrapper {
+  font-family: var(--title-3-font-family);
+  font-size: var(--title-3-font-size);
+  color: #ffffff;
+  position: relative;
+  width: fit-content;
+}
+
+.vector {
+  height: 34px;
+  left: 610px;
+  position: absolute;
+  top: 40px;
+  width: 37px;
+}
+
+.frame-wrapper {
+  background-color: #00000091;
+  border-radius: 27px;
+  box-shadow: 0px 4px 4px #00000040;
+  height: 116px;
+  left: 0;
+  position: absolute;
+  top: 219px;
+  width: 355px;
+}
+
+.frame-2 {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  left: 46px;
+  position: relative;
+  top: 41px;
+  width: 163px;
+}
+
+.img {
+  height: 36px;
+  margin-bottom: -1.5px;
+  margin-left: -1.5px;
+  margin-top: -1.5px;
+  position: relative;
+  width: 40px;
+}
+
+.div-wrapper {
+  background-color: #00000091;
+  border-radius: 27px;
+  box-shadow: 0px 4px 4px #00000040;
+  height: 116px;
+  left: 372px;
+  position: absolute;
+  top: 219px;
+  width: 317px;
+}
+
+.frame-3 {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  left: 45px;
+  position: relative;
+  top: 42px;
+  width: 148px;
+}
+
+.vector-2 {
+  height: 44px;
+  margin-bottom: -1.5px;
+  margin-left: -1.5px;
+  margin-top: -1.5px;
+  position: relative;
+  width: 44px;
+}
+
+.overlap-2 {
+  background-image: url('../../assets/images/image1.png');
+  background-size: 100% 100%;
+  height: 562px;
+  left: 113px;
+  position: absolute;
+  top: 210px;
+  width: 562px;
+}
+
+
+.text-wrapper-2 {
+  font-family: var(--title-font-family);
+  font-size: var(--title-font-size);
+  color: #ffffff;
+  height: 43px;
+  left: 195px;
+  position: absolute;
+  text-align: center;
+  top: 272px;
+  white-space: nowrap;
+}
+
+.setting-2 {
+  height: 60px;
+  left: 45px;
+  position: absolute;
+  top: 493px;
+  width: 60px;
+}
+
+.vector-3 {
+  height: 26px;
+  left: 26px;
+  position: absolute;
+  top: 34px;
+  width: 35px;
+}

@@ -1,1 +1,2081 @@
-{"openapi":"3.1.0","info":{"title":"DebateAI","version":"1.0.0"},"paths":{"/api/v1/auth/register":{"post":{"tags":["authentication","authentication"],"summary":"Register","description":"Register a new user.\n\nParameters:\n- email: Valid email address\n- username: Unique username\n- password: Strong password\n- voice_style: Preferred voice style (optional)\n- debate_style: Preferred debate style (optional)\n- preferred_role: Preferred debate role (optional)\n\nReturns:\n- Created user details (excluding password)\n\nRaises:\n- 400: Email or username already exists","operationId":"register_api_v1_auth_register_post","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserCreate"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/User"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/auth/login":{"post":{"tags":["authentication","authentication"],"summary":"Login","description":"OAuth2 compatible token login, get an access token for future requests.\n\nParameters:\n- username: User's username\n- password: User's password\n\nReturns:\n- access_token: JWT token for authentication\n- token_type: Type of token (always \"bearer\")\n\nRaises:\n- 401: Incorrect username or password\n- 400: Inactive user","operationId":"login_api_v1_auth_login_post","requestBody":{"content":{"application/x-www-form-urlencoded":{"schema":{"$ref":"#/components/schemas/Body_login_api_v1_auth_login_post"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Token"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/users/me":{"get":{"tags":["users","users"],"summary":"Get Current User","description":"Get current user's profile information.\n\nReturns:\n- User details including:\n    - email: User's email address\n    - username: User's username\n    - voice_style: Preferred voice style\n    - debate_style: Preferred debate style\n    - preferred_role: Preferred debate role\n    - is_active: Account status\n    - tutorial_progress: Progress in tutorials","operationId":"get_current_user_api_v1_users_me_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/User"}}}}},"security":[{"OAuth2PasswordBearer":[]}]},"put":{"tags":["users","users"],"summary":"Update User","description":"Update current user's profile.\n\nParameters:\n- email: New email address (optional)\n- password: New password (optional)\n- voice_style: New voice style preference (optional)\n- debate_style: New debate style preference (optional)\n- preferred_role: New preferred role (optional)\n\nReturns:\n- Updated user details","operationId":"update_user_api_v1_users_me_put","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/UserUpdate"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/User"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}},"security":[{"OAuth2PasswordBearer":[]}]}},"/api/v1/users/me/progress":{"get":{"tags":["users","users"],"summary":"Get Tutorial Progress","description":"Get current user's tutorial progress.\n\nReturns:\n- Dictionary containing:\n    - completed_questions: List of completed question IDs\n    - current_category: Current tutorial category\n    - total_score: Total points earned\n    - attempts_per_category: Number of attempts in each category","operationId":"get_tutorial_progress_api_v1_users_me_progress_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"type":"object","title":"Response Get Tutorial Progress Api V1 Users Me Progress Get"}}}}},"security":[{"OAuth2PasswordBearer":[]}]}},"/api/v1/debates/topics":{"get":{"tags":["debates","debates"],"summary":"Get Topics","description":"Retrieve all available debate topics.\n\nParameters:\n- skip: Number of records to skip (pagination)\n- limit: Maximum number of records to return\n\nReturns:\n- List of topics with their details","operationId":"get_topics_api_v1_debates_topics_get","parameters":[{"name":"skip","in":"query","required":false,"schema":{"type":"integer","default":0,"title":"Skip"}},{"name":"limit","in":"query","required":false,"schema":{"type":"integer","default":100,"title":"Limit"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/Topic"},"title":"Response Get Topics Api V1 Debates Topics Get"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"post":{"tags":["debates","debates"],"summary":"Create Topic","description":"Create a new debate topic.\n\nParameters:\n- title: Topic title\n- description: Detailed description of the topic\n- background: Background information\n- pro_stance: Arguments supporting the position\n- con_stance: Arguments against the position\n\nReturns:\n- Created topic details","operationId":"create_topic_api_v1_debates_topics_post","security":[{"OAuth2PasswordBearer":[]}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/TopicCreate"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Topic"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/debates/topics/{topic_id}":{"get":{"tags":["debates","debates"],"summary":"Get Topic","description":"Get details of a specific topic by ID.\n\nParameters:\n- topic_id: Unique identifier of the topic\n\nReturns:\n- Topic details including title, description, and stances\n\nRaises:\n- 404: Topic not found","operationId":"get_topic_api_v1_debates_topics__topic_id__get","parameters":[{"name":"topic_id","in":"path","required":true,"schema":{"type":"integer","title":"Topic Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Topic"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/debates/debates":{"post":{"tags":["debates","debates"],"summary":"Create Debate","description":"Create a new debate session.\n\nParameters:\n- topic_id: ID of the topic to debate about\n- user_role: Role of the user (pro/con)\n- max_rounds: Maximum number of rounds in the debate (default: 4)\n\nReturns:\n- Created debate session details\n\nRaises:\n- 404: Topic not found\n- 500: Internal server error during debate creation","operationId":"create_debate_api_v1_debates_debates_post","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/DebateCreate"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Debate"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}},"security":[{"OAuth2PasswordBearer":[]}]}},"/api/v1/debates/debates/me":{"get":{"tags":["debates","debates"],"summary":"Get User Debates","description":"Get all debates for the current user.\n\nParameters:\n- skip: Number of records to skip (pagination)\n- limit: Maximum number of records to return\n\nReturns:\n- List of user's debate sessions","operationId":"get_user_debates_api_v1_debates_debates_me_get","security":[{"OAuth2PasswordBearer":[]}],"parameters":[{"name":"skip","in":"query","required":false,"schema":{"type":"integer","default":0,"title":"Skip"}},{"name":"limit","in":"query","required":false,"schema":{"type":"integer","default":100,"title":"Limit"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/Debate"},"title":"Response Get User Debates Api V1 Debates Debates Me Get"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/debates/debates/{debate_id}":{"get":{"tags":["debates","debates"],"summary":"Get Debate","description":"Get details of a specific debate session.\n\nParameters:\n- debate_id: Unique identifier of the debate session\n\nReturns:\n- Debate session details including rounds and status\n\nRaises:\n- 404: Debate not found\n- 403: User not authorized to access this debate","operationId":"get_debate_api_v1_debates_debates__debate_id__get","security":[{"OAuth2PasswordBearer":[]}],"parameters":[{"name":"debate_id","in":"path","required":true,"schema":{"type":"integer","title":"Debate Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/Debate"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/debates/debates/{debate_id}/rounds":{"post":{"tags":["debates","debates"],"summary":"Create Debate Round","description":"Create a new round in a debate session.\n\nParameters:\n- debate_id: ID of the debate session\n- round_in: Round details including:\n    - content: The argument text\n    - speaker: Role of the speaker (pro/con)\n\nReturns:\n- Created round details including:\n    - content: The argument text\n    - speaker: Role of the speaker\n    - round_number: Sequential number of the round\n    - logic_structure: Logical analysis of the argument (if available)\n\nRaises:\n- 404: Debate not found\n- 403: User not authorized\n- 400: Debate is not active or maximum rounds reached","operationId":"create_debate_round_api_v1_debates_debates__debate_id__rounds_post","security":[{"OAuth2PasswordBearer":[]}],"parameters":[{"name":"debate_id","in":"path","required":true,"schema":{"type":"integer","title":"Debate Id"}}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/DebateRoundCreate"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/DebateRound"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"get":{"tags":["debates","debates"],"summary":"Get Debate Rounds","description":"Get all rounds for a specific debate session.\n\nParameters:\n- debate_id: Unique identifier of the debate session\n\nReturns:\n- List of debate rounds with their content and logical analysis\n\nRaises:\n- 404: Debate not found\n- 403: User not authorized to access this debate","operationId":"get_debate_rounds_api_v1_debates_debates__debate_id__rounds_get","security":[{"OAuth2PasswordBearer":[]}],"parameters":[{"name":"debate_id","in":"path","required":true,"schema":{"type":"integer","title":"Debate Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/DebateRound"},"title":"Response Get Debate Rounds Api V1 Debates Debates  Debate Id  Rounds Get"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/tutorials/questions":{"get":{"tags":["tutorials","tutorials"],"summary":"Get Questions","description":"Get tutorial questions by category.\n\nParameters:\n- category: Question category (e.g., \"logical_operators\", \"fallacies\")\n- skip: Number of records to skip (pagination)\n- limit: Maximum number of records to return\n\nReturns:\n- List of tutorial questions with their details","operationId":"get_questions_api_v1_tutorials_questions_get","parameters":[{"name":"category","in":"query","required":true,"schema":{"type":"string","title":"Category"}},{"name":"skip","in":"query","required":false,"schema":{"type":"integer","default":0,"title":"Skip"}},{"name":"limit","in":"query","required":false,"schema":{"type":"integer","default":100,"title":"Limit"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"type":"array","items":{"$ref":"#/components/schemas/TutorialQuestion"},"title":"Response Get Questions Api V1 Tutorials Questions Get"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}},"post":{"tags":["tutorials","tutorials"],"summary":"Create Question","description":"Create a new tutorial question.\n\nParameters:\n- category: Question category\n- statement: Question statement/text\n- correct_answer: The correct answer\n- explanation: Explanation of the answer\n- difficulty: Question difficulty level (1-5)\n- logical_structure: Optional logical structure for the question\n\nReturns:\n- Created question details","operationId":"create_question_api_v1_tutorials_questions_post","security":[{"OAuth2PasswordBearer":[]}],"requestBody":{"required":true,"content":{"application/json":{"schema":{"$ref":"#/components/schemas/TutorialQuestionCreate"}}}},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/TutorialQuestion"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/tutorials/questions/{question_id}":{"get":{"tags":["tutorials","tutorials"],"summary":"Get Question","description":"Get a specific tutorial question by ID.\n\nParameters:\n- question_id: Unique identifier of the question\n\nReturns:\n- Question details including statement, correct answer, and explanation\n\nRaises:\n- 404: Question not found","operationId":"get_question_api_v1_tutorials_questions__question_id__get","parameters":[{"name":"question_id","in":"path","required":true,"schema":{"type":"integer","title":"Question Id"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/TutorialQuestion"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/tutorials/attempts":{"post":{"tags":["tutorials","tutorials"],"summary":"Create Attempt","description":"Submit an answer attempt for a tutorial question.\n\nParameters:\n- question_id: ID of the question being answered\n- user_answer: User's submitted answer\n- is_correct: Whether the answer is correct\n- attempts_count: Number of attempts made (optional)\n\nReturns:\n- Created attempt details including correctness\n\nRaises:\n- 404: Question not found\n- 400: Invalid attempt data\n- 500: Internal server error","operationId":"create_attempt_api_v1_tutorials_attempts_post","requestBody":{"content":{"application/json":{"schema":{"$ref":"#/components/schemas/TutorialAttemptCreate"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/TutorialAttempt"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}},"security":[{"OAuth2PasswordBearer":[]}]}},"/api/v1/tutorials/progress":{"get":{"tags":["tutorials","tutorials"],"summary":"Get Progress","description":"Get current user's tutorial progress.\n\nReturns:\n- Progress details including:\n    - completed_questions: Dict of question IDs and completion status\n    - current_category: Current tutorial category\n    - total_score: Total score achieved\n    - attempts_per_category: Number of attempts per category","operationId":"get_progress_api_v1_tutorials_progress_get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/TutorialProgress"}}}}},"security":[{"OAuth2PasswordBearer":[]}]}},"/api/v1/tutorials/next-question":{"get":{"tags":["tutorials","tutorials"],"summary":"Get Next Question","description":"Get the next available question for the user.\n\nParameters:\n- category: Optional category to filter questions\n\nReturns:\n- Next question details based on user's progress\n\nRaises:\n- 404: No more questions available","operationId":"get_next_question_api_v1_tutorials_next_question_get","security":[{"OAuth2PasswordBearer":[]}],"parameters":[{"name":"category","in":"query","required":false,"schema":{"type":"string","title":"Category"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"$ref":"#/components/schemas/TutorialQuestion"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/api/v1/voice/stt":{"post":{"tags":["voice","voice"],"summary":"Speech To Text","description":"Convert speech audio to text using OpenAI Whisper API.\n\nParameters:\n- audio_file: Audio file in WAV, MP3, or M4A format\n\nReturns:\n- dict: {\"text\": str} containing the transcribed text\n\nRaises:\n- 400: Unsupported audio format\n- 500: Speech to text conversion failed","operationId":"speech_to_text_api_v1_voice_stt_post","requestBody":{"content":{"multipart/form-data":{"schema":{"$ref":"#/components/schemas/Body_speech_to_text_api_v1_voice_stt_post"}}},"required":true},"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{"type":"object","title":"Response Speech To Text Api V1 Voice Stt Post"}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}},"security":[{"OAuth2PasswordBearer":[]}]}},"/api/v1/voice/tts":{"post":{"tags":["voice","voice"],"summary":"Text To Speech","description":"Convert text to speech using ElevenLabs API.\n\nParameters:\n- text: Text content to convert to speech\n\nReturns:\n- Audio stream in MP3 format\n\nRaises:\n- 500: Text to speech conversion failed","operationId":"text_to_speech_api_v1_voice_tts_post","security":[{"OAuth2PasswordBearer":[]}],"parameters":[{"name":"text","in":"query","required":true,"schema":{"type":"string","title":"Text"}}],"responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}},"422":{"description":"Validation Error","content":{"application/json":{"schema":{"$ref":"#/components/schemas/HTTPValidationError"}}}}}}},"/":{"get":{"summary":"Root","operationId":"root__get","responses":{"200":{"description":"Successful Response","content":{"application/json":{"schema":{}}}}}}}},"components":{"schemas":{"Body_login_api_v1_auth_login_post":{"properties":{"grant_type":{"anyOf":[{"type":"string","pattern":"password"},{"type":"null"}],"title":"Grant Type"},"username":{"type":"string","title":"Username"},"password":{"type":"string","title":"Password"},"scope":{"type":"string","title":"Scope","default":""},"client_id":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Client Id"},"client_secret":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Client Secret"}},"type":"object","required":["username","password"],"title":"Body_login_api_v1_auth_login_post"},"Body_speech_to_text_api_v1_voice_stt_post":{"properties":{"audio_file":{"type":"string","format":"binary","title":"Audio File"}},"type":"object","required":["audio_file"],"title":"Body_speech_to_text_api_v1_voice_stt_post"},"Debate":{"properties":{"topic_id":{"type":"integer","title":"Topic Id"},"user_role":{"$ref":"#/components/schemas/Role"},"max_rounds":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Max Rounds","default":4},"current_round":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Current Round","default":1},"status":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Status","default":"active"},"final_score":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Final Score"},"final_summary":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Final Summary"},"id":{"type":"integer","title":"Id"},"user_id":{"type":"integer","title":"User Id"},"rounds":{"items":{"$ref":"#/components/schemas/DebateRound"},"type":"array","title":"Rounds","default":[]}},"type":"object","required":["topic_id","user_role","id","user_id"],"title":"Debate"},"DebateCreate":{"properties":{"topic_id":{"type":"integer","title":"Topic Id"},"user_role":{"$ref":"#/components/schemas/Role"},"max_rounds":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Max Rounds","default":4},"current_round":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Current Round","default":1},"status":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Status","default":"active"},"final_score":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Final Score"},"final_summary":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Final Summary"}},"type":"object","required":["topic_id","user_role"],"title":"DebateCreate"},"DebateRound":{"properties":{"round_number":{"type":"integer","title":"Round Number"},"speaker":{"$ref":"#/components/schemas/Role"},"content":{"type":"string","title":"Content"},"logic_structure":{"anyOf":[{"type":"object"},{"type":"null"}],"title":"Logic Structure"},"fallacies":{"anyOf":[{"items":{"type":"string"},"type":"array"},{"type":"null"}],"title":"Fallacies"},"id":{"type":"integer","title":"Id"},"debate_id":{"type":"integer","title":"Debate Id"}},"type":"object","required":["round_number","speaker","content","id","debate_id"],"title":"DebateRound"},"DebateRoundCreate":{"properties":{"round_number":{"type":"integer","title":"Round Number"},"speaker":{"$ref":"#/components/schemas/Role"},"content":{"type":"string","title":"Content"},"logic_structure":{"anyOf":[{"type":"object"},{"type":"null"}],"title":"Logic Structure"},"fallacies":{"anyOf":[{"items":{"type":"string"},"type":"array"},{"type":"null"}],"title":"Fallacies"},"debate_id":{"type":"integer","title":"Debate Id"}},"type":"object","required":["round_number","speaker","content","debate_id"],"title":"DebateRoundCreate"},"DebateStyle":{"type":"string","enum":["mild","aggressive","balanced"],"title":"DebateStyle"},"HTTPValidationError":{"properties":{"detail":{"items":{"$ref":"#/components/schemas/ValidationError"},"type":"array","title":"Detail"}},"type":"object","title":"HTTPValidationError"},"Role":{"type":"string","enum":["pro","con"],"title":"Role"},"Token":{"properties":{"access_token":{"type":"string","title":"Access Token"},"token_type":{"type":"string","title":"Token Type"}},"type":"object","required":["access_token","token_type"],"title":"Token"},"Topic":{"properties":{"title":{"type":"string","title":"Title"},"description":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Description"},"background":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Background"},"pro_stance":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Pro Stance"},"con_stance":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Con Stance"},"id":{"type":"integer","title":"Id"}},"type":"object","required":["title","id"],"title":"Topic"},"TopicCreate":{"properties":{"title":{"type":"string","title":"Title"},"description":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Description"},"background":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Background"},"pro_stance":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Pro Stance"},"con_stance":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Con Stance"}},"type":"object","required":["title"],"title":"TopicCreate"},"TutorialAttempt":{"properties":{"question_id":{"type":"integer","title":"Question Id"},"user_answer":{"type":"string","title":"User Answer"},"is_correct":{"type":"boolean","title":"Is Correct"},"attempts_count":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Attempts Count","default":1},"id":{"type":"integer","title":"Id"},"user_id":{"type":"integer","title":"User Id"}},"type":"object","required":["question_id","user_answer","is_correct","id","user_id"],"title":"TutorialAttempt"},"TutorialAttemptCreate":{"properties":{"question_id":{"type":"integer","title":"Question Id"},"user_answer":{"type":"string","title":"User Answer"},"is_correct":{"type":"boolean","title":"Is Correct"},"attempts_count":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Attempts Count","default":1},"user_id":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"User Id"}},"type":"object","required":["question_id","user_answer","is_correct"],"title":"TutorialAttemptCreate"},"TutorialProgress":{"properties":{"completed_questions":{"additionalProperties":{"type":"boolean"},"type":"object","title":"Completed Questions"},"current_category":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Current Category"},"total_score":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Total Score","default":0},"attempts_per_category":{"additionalProperties":{"type":"integer"},"type":"object","title":"Attempts Per Category"}},"type":"object","required":["completed_questions","attempts_per_category"],"title":"TutorialProgress"},"TutorialQuestion":{"properties":{"category":{"type":"string","title":"Category"},"statement":{"type":"string","title":"Statement"},"correct_answer":{"type":"string","title":"Correct Answer"},"explanation":{"type":"string","title":"Explanation"},"difficulty":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Difficulty","default":1},"logical_structure":{"anyOf":[{"type":"object"},{"type":"null"}],"title":"Logical Structure"},"id":{"type":"integer","title":"Id"}},"type":"object","required":["category","statement","correct_answer","explanation","id"],"title":"TutorialQuestion"},"TutorialQuestionCreate":{"properties":{"category":{"type":"string","title":"Category"},"statement":{"type":"string","title":"Statement"},"correct_answer":{"type":"string","title":"Correct Answer"},"explanation":{"type":"string","title":"Explanation"},"difficulty":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Difficulty","default":1},"logical_structure":{"anyOf":[{"type":"object"},{"type":"null"}],"title":"Logical Structure"}},"type":"object","required":["category","statement","correct_answer","explanation"],"title":"TutorialQuestionCreate"},"User":{"properties":{"email":{"anyOf":[{"type":"string","format":"email"},{"type":"null"}],"title":"Email"},"username":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Username"},"is_active":{"anyOf":[{"type":"boolean"},{"type":"null"}],"title":"Is Active","default":true},"voice_style":{"anyOf":[{"$ref":"#/components/schemas/VoiceStyle"},{"type":"null"}],"default":"neutral"},"debate_style":{"anyOf":[{"$ref":"#/components/schemas/DebateStyle"},{"type":"null"}],"default":"balanced"},"preferred_role":{"anyOf":[{"$ref":"#/components/schemas/Role"},{"type":"null"}],"default":"pro"},"id":{"anyOf":[{"type":"integer"},{"type":"null"}],"title":"Id"},"tutorial_progress":{"anyOf":[{"type":"object"},{"type":"null"}],"title":"Tutorial Progress","default":{}}},"type":"object","title":"User"},"UserCreate":{"properties":{"email":{"type":"string","format":"email","title":"Email"},"username":{"type":"string","title":"Username"},"is_active":{"anyOf":[{"type":"boolean"},{"type":"null"}],"title":"Is Active","default":true},"voice_style":{"anyOf":[{"$ref":"#/components/schemas/VoiceStyle"},{"type":"null"}],"default":"neutral"},"debate_style":{"anyOf":[{"$ref":"#/components/schemas/DebateStyle"},{"type":"null"}],"default":"balanced"},"preferred_role":{"anyOf":[{"$ref":"#/components/schemas/Role"},{"type":"null"}],"default":"pro"},"password":{"type":"string","title":"Password"}},"type":"object","required":["email","username","password"],"title":"UserCreate"},"UserUpdate":{"properties":{"email":{"anyOf":[{"type":"string","format":"email"},{"type":"null"}],"title":"Email"},"username":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Username"},"is_active":{"anyOf":[{"type":"boolean"},{"type":"null"}],"title":"Is Active","default":true},"voice_style":{"anyOf":[{"$ref":"#/components/schemas/VoiceStyle"},{"type":"null"}],"default":"neutral"},"debate_style":{"anyOf":[{"$ref":"#/components/schemas/DebateStyle"},{"type":"null"}],"default":"balanced"},"preferred_role":{"anyOf":[{"$ref":"#/components/schemas/Role"},{"type":"null"}],"default":"pro"},"password":{"anyOf":[{"type":"string"},{"type":"null"}],"title":"Password"}},"type":"object","title":"UserUpdate"},"ValidationError":{"properties":{"loc":{"items":{"anyOf":[{"type":"string"},{"type":"integer"}]},"type":"array","title":"Location"},"msg":{"type":"string","title":"Message"},"type":{"type":"string","title":"Error Type"}},"type":"object","required":["loc","msg","type"],"title":"ValidationError"},"VoiceStyle":{"type":"string","enum":["neutral","formal","casual"],"title":"VoiceStyle"}},"securitySchemes":{"OAuth2PasswordBearer":{"type":"oauth2","flows":{"password":{"scopes":{},"tokenUrl":"/api/v1/auth/login"}}}}}}
+{
+	"openapi": "3.1.0",
+	"info": {
+		"title": "DebateAI",
+		"version": "1.0.0"
+	},
+	"paths": {
+		"/api/v1/auth/register": {
+			"post": {
+				"tags": [
+					"authentication",
+					"authentication"
+				],
+				"summary": "Register",
+				"description": "Register a new user.\n\nParameters:\n- email: Valid email address\n- username: Unique username\n- password: Strong password\n- voice_style: Preferred voice style (optional)\n- debate_style: Preferred debate style (optional)\n- preferred_role: Preferred debate role (optional)\n\nReturns:\n- Created user details (excluding password)\n\nRaises:\n- 400: Email or username already exists",
+				"operationId": "register_api_v1_auth_register_post",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserCreate"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/auth/login": {
+			"post": {
+				"tags": [
+					"authentication",
+					"authentication"
+				],
+				"summary": "Login",
+				"description": "OAuth2 compatible token login, get an access token for future requests.\n\nParameters:\n- username: User's username\n- password: User's password\n\nReturns:\n- access_token: JWT token for authentication\n- token_type: Type of token (always \"bearer\")\n\nRaises:\n- 401: Incorrect username or password\n- 400: Inactive user",
+				"operationId": "login_api_v1_auth_login_post",
+				"requestBody": {
+					"content": {
+						"application/x-www-form-urlencoded": {
+							"schema": {
+								"$ref": "#/components/schemas/Body_login_api_v1_auth_login_post"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Token"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/users/me": {
+			"get": {
+				"tags": [
+					"users",
+					"users"
+				],
+				"summary": "Get Current User",
+				"description": "Get current user's profile information.\n\nReturns:\n- User details including:\n    - email: User's email address\n    - username: User's username\n    - voice_style: Preferred voice style\n    - debate_style: Preferred debate style\n    - preferred_role: Preferred debate role\n    - is_active: Account status\n    - tutorial_progress: Progress in tutorials",
+				"operationId": "get_current_user_api_v1_users_me_get",
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"OAuth2PasswordBearer": []
+					}
+				]
+			},
+			"put": {
+				"tags": [
+					"users",
+					"users"
+				],
+				"summary": "Update User",
+				"description": "Update current user's profile.\n\nParameters:\n- email: New email address (optional)\n- password: New password (optional)\n- voice_style: New voice style preference (optional)\n- debate_style: New debate style preference (optional)\n- preferred_role: New preferred role (optional)\n\nReturns:\n- Updated user details",
+				"operationId": "update_user_api_v1_users_me_put",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/UserUpdate"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/User"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"OAuth2PasswordBearer": []
+					}
+				]
+			}
+		},
+		"/api/v1/users/me/progress": {
+			"get": {
+				"tags": [
+					"users",
+					"users"
+				],
+				"summary": "Get Tutorial Progress",
+				"description": "Get current user's tutorial progress.\n\nReturns:\n- Dictionary containing:\n    - completed_questions: List of completed question IDs\n    - current_category: Current tutorial category\n    - total_score: Total points earned\n    - attempts_per_category: Number of attempts in each category",
+				"operationId": "get_tutorial_progress_api_v1_users_me_progress_get",
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"title": "Response Get Tutorial Progress Api V1 Users Me Progress Get"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"OAuth2PasswordBearer": []
+					}
+				]
+			}
+		},
+		"/api/v1/debates/topics": {
+			"get": {
+				"tags": [
+					"debates",
+					"debates"
+				],
+				"summary": "Get Topics",
+				"description": "Retrieve all available debate topics.\n\nParameters:\n- skip: Number of records to skip (pagination)\n- limit: Maximum number of records to return\n\nReturns:\n- List of topics with their details",
+				"operationId": "get_topics_api_v1_debates_topics_get",
+				"parameters": [
+					{
+						"name": "skip",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 0,
+							"title": "Skip"
+						}
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 100,
+							"title": "Limit"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Topic"
+									},
+									"title": "Response Get Topics Api V1 Debates Topics Get"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"debates",
+					"debates"
+				],
+				"summary": "Create Topic",
+				"description": "Create a new debate topic.\n\nParameters:\n- title: Topic title\n- description: Detailed description of the topic\n- background: Background information\n- pro_stance: Arguments supporting the position\n- con_stance: Arguments against the position\n\nReturns:\n- Created topic details",
+				"operationId": "create_topic_api_v1_debates_topics_post",
+				"security": [
+					{
+						"OAuth2PasswordBearer": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TopicCreate"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Topic"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/debates/topics/{topic_id}": {
+			"get": {
+				"tags": [
+					"debates",
+					"debates"
+				],
+				"summary": "Get Topic",
+				"description": "Get details of a specific topic by ID.\n\nParameters:\n- topic_id: Unique identifier of the topic\n\nReturns:\n- Topic details including title, description, and stances\n\nRaises:\n- 404: Topic not found",
+				"operationId": "get_topic_api_v1_debates_topics__topic_id__get",
+				"parameters": [
+					{
+						"name": "topic_id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"title": "Topic Id"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Topic"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/debates/debates": {
+			"post": {
+				"tags": [
+					"debates",
+					"debates"
+				],
+				"summary": "Create Debate",
+				"description": "Create a new debate session.\n\nParameters:\n- topic_id: ID of the topic to debate about\n- user_role: Role of the user (pro/con)\n- max_rounds: Maximum number of rounds in the debate (default: 4)\n\nReturns:\n- Created debate session details\n\nRaises:\n- 404: Topic not found\n- 500: Internal server error during debate creation",
+				"operationId": "create_debate_api_v1_debates_debates_post",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/DebateCreate"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Debate"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"OAuth2PasswordBearer": []
+					}
+				]
+			}
+		},
+		"/api/v1/debates/debates/me": {
+			"get": {
+				"tags": [
+					"debates",
+					"debates"
+				],
+				"summary": "Get User Debates",
+				"description": "Get all debates for the current user.\n\nParameters:\n- skip: Number of records to skip (pagination)\n- limit: Maximum number of records to return\n\nReturns:\n- List of user's debate sessions",
+				"operationId": "get_user_debates_api_v1_debates_debates_me_get",
+				"security": [
+					{
+						"OAuth2PasswordBearer": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "skip",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 0,
+							"title": "Skip"
+						}
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 100,
+							"title": "Limit"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/Debate"
+									},
+									"title": "Response Get User Debates Api V1 Debates Debates Me Get"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/debates/debates/{debate_id}": {
+			"get": {
+				"tags": [
+					"debates",
+					"debates"
+				],
+				"summary": "Get Debate",
+				"description": "Get details of a specific debate session.\n\nParameters:\n- debate_id: Unique identifier of the debate session\n\nReturns:\n- Debate session details including rounds and status\n\nRaises:\n- 404: Debate not found\n- 403: User not authorized to access this debate",
+				"operationId": "get_debate_api_v1_debates_debates__debate_id__get",
+				"security": [
+					{
+						"OAuth2PasswordBearer": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "debate_id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"title": "Debate Id"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/Debate"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/debates/debates/{debate_id}/rounds": {
+			"post": {
+				"tags": [
+					"debates",
+					"debates"
+				],
+				"summary": "Create Debate Round",
+				"description": "Create a new round in a debate session.\n\nParameters:\n- debate_id: ID of the debate session\n- round_in: Round details including:\n    - content: The argument text\n    - speaker: Role of the speaker (pro/con)\n\nReturns:\n- Created round details including:\n    - content: The argument text\n    - speaker: Role of the speaker\n    - round_number: Sequential number of the round\n    - logic_structure: Logical analysis of the argument (if available)\n\nRaises:\n- 404: Debate not found\n- 403: User not authorized\n- 400: Debate is not active or maximum rounds reached",
+				"operationId": "create_debate_round_api_v1_debates_debates__debate_id__rounds_post",
+				"security": [
+					{
+						"OAuth2PasswordBearer": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "debate_id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"title": "Debate Id"
+						}
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/DebateRoundCreate"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/DebateRound"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			},
+			"get": {
+				"tags": [
+					"debates",
+					"debates"
+				],
+				"summary": "Get Debate Rounds",
+				"description": "Get all rounds for a specific debate session.\n\nParameters:\n- debate_id: Unique identifier of the debate session\n\nReturns:\n- List of debate rounds with their content and logical analysis\n\nRaises:\n- 404: Debate not found\n- 403: User not authorized to access this debate",
+				"operationId": "get_debate_rounds_api_v1_debates_debates__debate_id__rounds_get",
+				"security": [
+					{
+						"OAuth2PasswordBearer": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "debate_id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"title": "Debate Id"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/DebateRound"
+									},
+									"title": "Response Get Debate Rounds Api V1 Debates Debates  Debate Id  Rounds Get"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/tutorials/questions": {
+			"get": {
+				"tags": [
+					"tutorials",
+					"tutorials"
+				],
+				"summary": "Get Questions",
+				"description": "Get tutorial questions by category.\n\nParameters:\n- category: Question category (e.g., \"logical_operators\", \"fallacies\")\n- skip: Number of records to skip (pagination)\n- limit: Maximum number of records to return\n\nReturns:\n- List of tutorial questions with their details",
+				"operationId": "get_questions_api_v1_tutorials_questions_get",
+				"parameters": [
+					{
+						"name": "category",
+						"in": "query",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"title": "Category"
+						}
+					},
+					{
+						"name": "skip",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 0,
+							"title": "Skip"
+						}
+					},
+					{
+						"name": "limit",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "integer",
+							"default": 100,
+							"title": "Limit"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "array",
+									"items": {
+										"$ref": "#/components/schemas/TutorialQuestion"
+									},
+									"title": "Response Get Questions Api V1 Tutorials Questions Get"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			},
+			"post": {
+				"tags": [
+					"tutorials",
+					"tutorials"
+				],
+				"summary": "Create Question",
+				"description": "Create a new tutorial question.\n\nParameters:\n- category: Question category\n- statement: Question statement/text\n- correct_answer: The correct answer\n- explanation: Explanation of the answer\n- difficulty: Question difficulty level (1-5)\n- logical_structure: Optional logical structure for the question\n\nReturns:\n- Created question details",
+				"operationId": "create_question_api_v1_tutorials_questions_post",
+				"security": [
+					{
+						"OAuth2PasswordBearer": []
+					}
+				],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TutorialQuestionCreate"
+							}
+						}
+					}
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TutorialQuestion"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/tutorials/questions/{question_id}": {
+			"get": {
+				"tags": [
+					"tutorials",
+					"tutorials"
+				],
+				"summary": "Get Question",
+				"description": "Get a specific tutorial question by ID.\n\nParameters:\n- question_id: Unique identifier of the question\n\nReturns:\n- Question details including statement, correct answer, and explanation\n\nRaises:\n- 404: Question not found",
+				"operationId": "get_question_api_v1_tutorials_questions__question_id__get",
+				"parameters": [
+					{
+						"name": "question_id",
+						"in": "path",
+						"required": true,
+						"schema": {
+							"type": "integer",
+							"title": "Question Id"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TutorialQuestion"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/tutorials/attempts": {
+			"post": {
+				"tags": [
+					"tutorials",
+					"tutorials"
+				],
+				"summary": "Create Attempt",
+				"description": "Submit an answer attempt for a tutorial question.\n\nParameters:\n- question_id: ID of the question being answered\n- user_answer: User's submitted answer\n- is_correct: Whether the answer is correct\n- attempts_count: Number of attempts made (optional)\n\nReturns:\n- Created attempt details including correctness\n\nRaises:\n- 404: Question not found\n- 400: Invalid attempt data\n- 500: Internal server error",
+				"operationId": "create_attempt_api_v1_tutorials_attempts_post",
+				"requestBody": {
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/TutorialAttemptCreate"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TutorialAttempt"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"OAuth2PasswordBearer": []
+					}
+				]
+			}
+		},
+		"/api/v1/tutorials/progress": {
+			"get": {
+				"tags": [
+					"tutorials",
+					"tutorials"
+				],
+				"summary": "Get Progress",
+				"description": "Get current user's tutorial progress.\n\nReturns:\n- Progress details including:\n    - completed_questions: Dict of question IDs and completion status\n    - current_category: Current tutorial category\n    - total_score: Total score achieved\n    - attempts_per_category: Number of attempts per category",
+				"operationId": "get_progress_api_v1_tutorials_progress_get",
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TutorialProgress"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"OAuth2PasswordBearer": []
+					}
+				]
+			}
+		},
+		"/api/v1/tutorials/next-question": {
+			"get": {
+				"tags": [
+					"tutorials",
+					"tutorials"
+				],
+				"summary": "Get Next Question",
+				"description": "Get the next available question for the user.\n\nParameters:\n- category: Optional category to filter questions\n\nReturns:\n- Next question details based on user's progress\n\nRaises:\n- 404: No more questions available",
+				"operationId": "get_next_question_api_v1_tutorials_next_question_get",
+				"security": [
+					{
+						"OAuth2PasswordBearer": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "category",
+						"in": "query",
+						"required": false,
+						"schema": {
+							"type": "string",
+							"title": "Category"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TutorialQuestion"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/voice/stt": {
+			"post": {
+				"tags": [
+					"voice",
+					"voice"
+				],
+				"summary": "Speech To Text",
+				"description": "Convert speech audio to text using OpenAI Whisper API.\n\nParameters:\n- audio_file: Audio file in WAV, MP3, or M4A format\n\nReturns:\n- dict: {\"text\": str} containing the transcribed text\n\nRaises:\n- 400: Unsupported audio format\n- 500: Speech to text conversion failed",
+				"operationId": "speech_to_text_api_v1_voice_stt_post",
+				"requestBody": {
+					"content": {
+						"multipart/form-data": {
+							"schema": {
+								"$ref": "#/components/schemas/Body_speech_to_text_api_v1_voice_stt_post"
+							}
+						}
+					},
+					"required": true
+				},
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {
+									"type": "object",
+									"title": "Response Speech To Text Api V1 Voice Stt Post"
+								}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"OAuth2PasswordBearer": []
+					}
+				]
+			}
+		},
+		"/api/v1/voice/tts": {
+			"post": {
+				"tags": [
+					"voice",
+					"voice"
+				],
+				"summary": "Text To Speech",
+				"description": "Convert text to speech using ElevenLabs API.\n\nParameters:\n- text: Text content to convert to speech\n\nReturns:\n- Audio stream in MP3 format\n\nRaises:\n- 500: Text to speech conversion failed",
+				"operationId": "text_to_speech_api_v1_voice_tts_post",
+				"security": [
+					{
+						"OAuth2PasswordBearer": []
+					}
+				],
+				"parameters": [
+					{
+						"name": "text",
+						"in": "query",
+						"required": true,
+						"schema": {
+							"type": "string",
+							"title": "Text"
+						}
+					}
+				],
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					},
+					"422": {
+						"description": "Validation Error",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/HTTPValidationError"
+								}
+							}
+						}
+					}
+				}
+			}
+		},
+		"/": {
+			"get": {
+				"summary": "Root",
+				"operationId": "root__get",
+				"responses": {
+					"200": {
+						"description": "Successful Response",
+						"content": {
+							"application/json": {
+								"schema": {}
+							}
+						}
+					}
+				}
+			}
+		}
+	},
+	"components": {
+		"schemas": {
+			"Body_login_api_v1_auth_login_post": {
+				"properties": {
+					"grant_type": {
+						"anyOf": [
+							{
+								"type": "string",
+								"pattern": "password"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Grant Type"
+					},
+					"username": {
+						"type": "string",
+						"title": "Username"
+					},
+					"password": {
+						"type": "string",
+						"title": "Password"
+					},
+					"scope": {
+						"type": "string",
+						"title": "Scope",
+						"default": ""
+					},
+					"client_id": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Client Id"
+					},
+					"client_secret": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Client Secret"
+					}
+				},
+				"type": "object",
+				"required": [
+					"username",
+					"password"
+				],
+				"title": "Body_login_api_v1_auth_login_post"
+			},
+			"Body_speech_to_text_api_v1_voice_stt_post": {
+				"properties": {
+					"audio_file": {
+						"type": "string",
+						"format": "binary",
+						"title": "Audio File"
+					}
+				},
+				"type": "object",
+				"required": [
+					"audio_file"
+				],
+				"title": "Body_speech_to_text_api_v1_voice_stt_post"
+			},
+			"Debate": {
+				"properties": {
+					"topic_id": {
+						"type": "integer",
+						"title": "Topic Id"
+					},
+					"user_role": {
+						"$ref": "#/components/schemas/Role"
+					},
+					"max_rounds": {
+						"anyOf": [
+							{
+								"type": "integer"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Max Rounds",
+						"default": 4
+					},
+					"current_round": {
+						"anyOf": [
+							{
+								"type": "integer"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Current Round",
+						"default": 1
+					},
+					"status": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Status",
+						"default": "active"
+					},
+					"final_score": {
+						"anyOf": [
+							{
+								"type": "integer"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Final Score"
+					},
+					"final_summary": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Final Summary"
+					},
+					"id": {
+						"type": "integer",
+						"title": "Id"
+					},
+					"user_id": {
+						"type": "integer",
+						"title": "User Id"
+					},
+					"rounds": {
+						"items": {
+							"$ref": "#/components/schemas/DebateRound"
+						},
+						"type": "array",
+						"title": "Rounds",
+						"default": []
+					}
+				},
+				"type": "object",
+				"required": [
+					"topic_id",
+					"user_role",
+					"id",
+					"user_id"
+				],
+				"title": "Debate"
+			},
+			"DebateCreate": {
+				"properties": {
+					"topic_id": {
+						"type": "integer",
+						"title": "Topic Id"
+					},
+					"user_role": {
+						"$ref": "#/components/schemas/Role"
+					},
+					"max_rounds": {
+						"anyOf": [
+							{
+								"type": "integer"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Max Rounds",
+						"default": 4
+					},
+					"current_round": {
+						"anyOf": [
+							{
+								"type": "integer"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Current Round",
+						"default": 1
+					},
+					"status": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Status",
+						"default": "active"
+					},
+					"final_score": {
+						"anyOf": [
+							{
+								"type": "integer"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Final Score"
+					},
+					"final_summary": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Final Summary"
+					}
+				},
+				"type": "object",
+				"required": [
+					"topic_id",
+					"user_role"
+				],
+				"title": "DebateCreate"
+			},
+			"DebateRound": {
+				"properties": {
+					"round_number": {
+						"type": "integer",
+						"title": "Round Number"
+					},
+					"speaker": {
+						"$ref": "#/components/schemas/Role"
+					},
+					"content": {
+						"type": "string",
+						"title": "Content"
+					},
+					"logic_structure": {
+						"anyOf": [
+							{
+								"type": "object"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Logic Structure"
+					},
+					"fallacies": {
+						"anyOf": [
+							{
+								"items": {
+									"type": "string"
+								},
+								"type": "array"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Fallacies"
+					},
+					"id": {
+						"type": "integer",
+						"title": "Id"
+					},
+					"debate_id": {
+						"type": "integer",
+						"title": "Debate Id"
+					}
+				},
+				"type": "object",
+				"required": [
+					"round_number",
+					"speaker",
+					"content",
+					"id",
+					"debate_id"
+				],
+				"title": "DebateRound"
+			},
+			"DebateRoundCreate": {
+				"properties": {
+					"round_number": {
+						"type": "integer",
+						"title": "Round Number"
+					},
+					"speaker": {
+						"$ref": "#/components/schemas/Role"
+					},
+					"content": {
+						"type": "string",
+						"title": "Content"
+					},
+					"logic_structure": {
+						"anyOf": [
+							{
+								"type": "object"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Logic Structure"
+					},
+					"fallacies": {
+						"anyOf": [
+							{
+								"items": {
+									"type": "string"
+								},
+								"type": "array"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Fallacies"
+					},
+					"debate_id": {
+						"type": "integer",
+						"title": "Debate Id"
+					}
+				},
+				"type": "object",
+				"required": [
+					"round_number",
+					"speaker",
+					"content",
+					"debate_id"
+				],
+				"title": "DebateRoundCreate"
+			},
+			"DebateStyle": {
+				"type": "string",
+				"enum": [
+					"mild",
+					"aggressive",
+					"balanced"
+				],
+				"title": "DebateStyle"
+			},
+			"HTTPValidationError": {
+				"properties": {
+					"detail": {
+						"items": {
+							"$ref": "#/components/schemas/ValidationError"
+						},
+						"type": "array",
+						"title": "Detail"
+					}
+				},
+				"type": "object",
+				"title": "HTTPValidationError"
+			},
+			"Role": {
+				"type": "string",
+				"enum": [
+					"pro",
+					"con"
+				],
+				"title": "Role"
+			},
+			"Token": {
+				"properties": {
+					"access_token": {
+						"type": "string",
+						"title": "Access Token"
+					},
+					"token_type": {
+						"type": "string",
+						"title": "Token Type"
+					}
+				},
+				"type": "object",
+				"required": [
+					"access_token",
+					"token_type"
+				],
+				"title": "Token"
+			},
+			"Topic": {
+				"properties": {
+					"title": {
+						"type": "string",
+						"title": "Title"
+					},
+					"description": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Description"
+					},
+					"background": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Background"
+					},
+					"pro_stance": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Pro Stance"
+					},
+					"con_stance": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Con Stance"
+					},
+					"id": {
+						"type": "integer",
+						"title": "Id"
+					}
+				},
+				"type": "object",
+				"required": [
+					"title",
+					"id"
+				],
+				"title": "Topic"
+			},
+			"TopicCreate": {
+				"properties": {
+					"title": {
+						"type": "string",
+						"title": "Title"
+					},
+					"description": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Description"
+					},
+					"background": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Background"
+					},
+					"pro_stance": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Pro Stance"
+					},
+					"con_stance": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Con Stance"
+					}
+				},
+				"type": "object",
+				"required": [
+					"title"
+				],
+				"title": "TopicCreate"
+			},
+			"TutorialAttempt": {
+				"properties": {
+					"question_id": {
+						"type": "integer",
+						"title": "Question Id"
+					},
+					"user_answer": {
+						"type": "string",
+						"title": "User Answer"
+					},
+					"is_correct": {
+						"type": "boolean",
+						"title": "Is Correct"
+					},
+					"attempts_count": {
+						"anyOf": [
+							{
+								"type": "integer"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Attempts Count",
+						"default": 1
+					},
+					"id": {
+						"type": "integer",
+						"title": "Id"
+					},
+					"user_id": {
+						"type": "integer",
+						"title": "User Id"
+					}
+				},
+				"type": "object",
+				"required": [
+					"question_id",
+					"user_answer",
+					"is_correct",
+					"id",
+					"user_id"
+				],
+				"title": "TutorialAttempt"
+			},
+			"TutorialAttemptCreate": {
+				"properties": {
+					"question_id": {
+						"type": "integer",
+						"title": "Question Id"
+					},
+					"user_answer": {
+						"type": "string",
+						"title": "User Answer"
+					},
+					"is_correct": {
+						"type": "boolean",
+						"title": "Is Correct"
+					},
+					"attempts_count": {
+						"anyOf": [
+							{
+								"type": "integer"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Attempts Count",
+						"default": 1
+					},
+					"user_id": {
+						"anyOf": [
+							{
+								"type": "integer"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "User Id"
+					}
+				},
+				"type": "object",
+				"required": [
+					"question_id",
+					"user_answer",
+					"is_correct"
+				],
+				"title": "TutorialAttemptCreate"
+			},
+			"TutorialProgress": {
+				"properties": {
+					"completed_questions": {
+						"additionalProperties": {
+							"type": "boolean"
+						},
+						"type": "object",
+						"title": "Completed Questions"
+					},
+					"current_category": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Current Category"
+					},
+					"total_score": {
+						"anyOf": [
+							{
+								"type": "integer"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Total Score",
+						"default": 0
+					},
+					"attempts_per_category": {
+						"additionalProperties": {
+							"type": "integer"
+						},
+						"type": "object",
+						"title": "Attempts Per Category"
+					}
+				},
+				"type": "object",
+				"required": [
+					"completed_questions",
+					"attempts_per_category"
+				],
+				"title": "TutorialProgress"
+			},
+			"TutorialQuestion": {
+				"properties": {
+					"category": {
+						"type": "string",
+						"title": "Category"
+					},
+					"statement": {
+						"type": "string",
+						"title": "Statement"
+					},
+					"correct_answer": {
+						"type": "string",
+						"title": "Correct Answer"
+					},
+					"explanation": {
+						"type": "string",
+						"title": "Explanation"
+					},
+					"difficulty": {
+						"anyOf": [
+							{
+								"type": "integer"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Difficulty",
+						"default": 1
+					},
+					"logical_structure": {
+						"anyOf": [
+							{
+								"type": "object"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Logical Structure"
+					},
+					"id": {
+						"type": "integer",
+						"title": "Id"
+					}
+				},
+				"type": "object",
+				"required": [
+					"category",
+					"statement",
+					"correct_answer",
+					"explanation",
+					"id"
+				],
+				"title": "TutorialQuestion"
+			},
+			"TutorialQuestionCreate": {
+				"properties": {
+					"category": {
+						"type": "string",
+						"title": "Category"
+					},
+					"statement": {
+						"type": "string",
+						"title": "Statement"
+					},
+					"correct_answer": {
+						"type": "string",
+						"title": "Correct Answer"
+					},
+					"explanation": {
+						"type": "string",
+						"title": "Explanation"
+					},
+					"difficulty": {
+						"anyOf": [
+							{
+								"type": "integer"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Difficulty",
+						"default": 1
+					},
+					"logical_structure": {
+						"anyOf": [
+							{
+								"type": "object"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Logical Structure"
+					}
+				},
+				"type": "object",
+				"required": [
+					"category",
+					"statement",
+					"correct_answer",
+					"explanation"
+				],
+				"title": "TutorialQuestionCreate"
+			},
+			"User": {
+				"properties": {
+					"email": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "email"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Email"
+					},
+					"username": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Username"
+					},
+					"is_active": {
+						"anyOf": [
+							{
+								"type": "boolean"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Is Active",
+						"default": true
+					},
+					"voice_style": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/VoiceStyle"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"default": "neutral"
+					},
+					"debate_style": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/DebateStyle"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"default": "balanced"
+					},
+					"preferred_role": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/Role"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"default": "pro"
+					},
+					"id": {
+						"anyOf": [
+							{
+								"type": "integer"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Id"
+					},
+					"tutorial_progress": {
+						"anyOf": [
+							{
+								"type": "object"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Tutorial Progress",
+						"default": {}
+					}
+				},
+				"type": "object",
+				"title": "User"
+			},
+			"UserCreate": {
+				"properties": {
+					"email": {
+						"type": "string",
+						"format": "email",
+						"title": "Email"
+					},
+					"username": {
+						"type": "string",
+						"title": "Username"
+					},
+					"is_active": {
+						"anyOf": [
+							{
+								"type": "boolean"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Is Active",
+						"default": true
+					},
+					"voice_style": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/VoiceStyle"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"default": "neutral"
+					},
+					"debate_style": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/DebateStyle"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"default": "balanced"
+					},
+					"preferred_role": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/Role"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"default": "pro"
+					},
+					"password": {
+						"type": "string",
+						"title": "Password"
+					}
+				},
+				"type": "object",
+				"required": [
+					"email",
+					"username",
+					"password"
+				],
+				"title": "UserCreate"
+			},
+			"UserUpdate": {
+				"properties": {
+					"email": {
+						"anyOf": [
+							{
+								"type": "string",
+								"format": "email"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Email"
+					},
+					"username": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Username"
+					},
+					"is_active": {
+						"anyOf": [
+							{
+								"type": "boolean"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Is Active",
+						"default": true
+					},
+					"voice_style": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/VoiceStyle"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"default": "neutral"
+					},
+					"debate_style": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/DebateStyle"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"default": "balanced"
+					},
+					"preferred_role": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/Role"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"default": "pro"
+					},
+					"password": {
+						"anyOf": [
+							{
+								"type": "string"
+							},
+							{
+								"type": "null"
+							}
+						],
+						"title": "Password"
+					}
+				},
+				"type": "object",
+				"title": "UserUpdate"
+			},
+			"ValidationError": {
+				"properties": {
+					"loc": {
+						"items": {
+							"anyOf": [
+								{
+									"type": "string"
+								},
+								{
+									"type": "integer"
+								}
+							]
+						},
+						"type": "array",
+						"title": "Location"
+					},
+					"msg": {
+						"type": "string",
+						"title": "Message"
+					},
+					"type": {
+						"type": "string",
+						"title": "Error Type"
+					}
+				},
+				"type": "object",
+				"required": [
+					"loc",
+					"msg",
+					"type"
+				],
+				"title": "ValidationError"
+			},
+			"VoiceStyle": {
+				"type": "string",
+				"enum": [
+					"neutral",
+					"formal",
+					"casual"
+				],
+				"title": "VoiceStyle"
+			}
+		},
+		"securitySchemes": {
+			"OAuth2PasswordBearer": {
+				"type": "oauth2",
+				"flows": {
+					"password": {
+						"scopes": {},
+						"tokenUrl": "/api/v1/auth/login"
+					}
+				}
+			}
+		}
+	}
+}

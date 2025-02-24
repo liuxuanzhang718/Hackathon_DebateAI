@@ -1,0 +1,40 @@
+@import url('https://fonts.googleapis.com/css2?family=Lato:wght@400;700&display=swap');
+
+:root {
+  --main-font: 'Lato', sans-serif;
+}
+
+html, body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--main-font);
+  font-size: 16px;
+  background-color: #000;
+  color: #fff;
+}
+
+h1, .title {
+  font-weight: 700;
+  font-size: 48px;
+}
+
+h2, .title2 {
+  font-weight: 400; 
+  font-size: 36px;
+}
+
+h3, .title3 {
+  font-weight: 400;
+  font-size: 28px;
+}
+
+p, .content {
+  font-weight: 400;
+  font-size: 24px;
+}
+
+.conflictContent {
+  font-weight: 400;
+  font-size: 24px;
+  color: #F8B40A;
+}

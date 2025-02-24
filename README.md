@@ -1,9 +1,11 @@
 # VeriVox - AI-Powered Debate Platform
 <div align="center">
   <img src="images/logo.png" alt="Debate AI Platform Logo" 
-  width="200"/>
+  width="400"/>
+
 </div>
-VeriVox is an innovative AI-powered debate platform that combines symbolic logic validation with voice-assisted interaction, creating an immersive and structured learning experience for debate enthusiasts.
+
+***VeriVox*** is an innovative AI-powered debate platform that combines symbolic logic validation with voice-assisted interaction, creating an immersive and structured learning experience for debate enthusiasts.
 
 ## Core Features
 

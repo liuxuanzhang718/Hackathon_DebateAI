@@ -20,7 +20,7 @@ const Lobby = (): JSX.Element => {
       <div className="main-layout">
         {/* Sphere */}
         <div className="overlap-2">
-          <div className="text-wrapper-2">Xiaoyang</div>
+          <h1 className="text-wrapper-2">VeriVox</h1>
           <img 
             className="setting-2" alt="Setting" 
             src={settingIcon}

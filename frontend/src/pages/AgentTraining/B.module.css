@@ -1,7 +1,7 @@
 /* ==== Bottom Section ==== */
 .bottomSection {
     width: 100%;
-    background: rgba(255, 255, 255, 0.05);
+    /* background: rgba(255, 255, 255, 0.05); */
     padding: 20px;
     color: #ffffff;
 }

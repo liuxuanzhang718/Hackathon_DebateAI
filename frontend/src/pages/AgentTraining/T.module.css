@@ -1,43 +1,50 @@
 /* ==== Top Section === */
 .topSection {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: space-around;
-    padding: 20px;
-    background-color: #1b1b1b;
-    color: #ffffff;
-  }
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-around;
+  padding: 20px;
+  color: #ffffff;
+}
 
-  .topic {
-    width: 100%;
-    text-align: center;
-    margin-top: 30px;
-    margin-bottom: 20px;
-  }
-  
-  .row {
-    margin-top: 30px;
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    justify-content: space-around;
-    width: 100%;
-  }
-  
+.topic {
+  width: 100%;
+  text-align: center;
+  margin-top: 30px;
+  margin-bottom: 20px;
+}
+
+.row {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  justify-content: space-around;
+  width: 100%;
+}
+
 .speaker {
-    width: 25%;
-    text-align: center;
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 8px;
-    padding: 20px;
-    margin: 0 10px;
+  width: 25%;
+  text-align: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  padding: 20px;
+  margin: 0 10px;
 }
 
 .middleBall {
-    width: 25%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    position: relative;
+  width: 30%;
+  min-height: 480px; 
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  position: relative;
+  background: url('../../assets/particles/2-1.gif') no-repeat center center;
+  background-size: 150%; 
+}
+
+.talkBall {
+  position: relative;
+  z-index: 1;
 }

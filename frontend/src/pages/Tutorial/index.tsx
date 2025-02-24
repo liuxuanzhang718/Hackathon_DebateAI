@@ -10,7 +10,7 @@ import AndIcon from '../../assets/icons/And.svg';
 import ImplyIcon from '../../assets/icons/Imply.svg';
 import ExitIcon from '../../assets/icons/Exit.svg';
 import SmallSwirlIcon from '../../assets/images/image2-1.png'
-import SwirlImage from '../../assets/images/image2.png';
+import SwirlGIF from '../../assets/particles/1-1.gif'
 import QuestionIcon from '../../assets/icons/Question.png'
 
 /** Top */
@@ -36,7 +36,7 @@ const TopSection: React.FC = () => {
       {/* middle + text */}
       <div className={styles.swirlContainer}>
         <img
-          src={SwirlImage}
+          src={SwirlGIF}
           alt="Swirl"
           className={styles.swirlImage}
         />

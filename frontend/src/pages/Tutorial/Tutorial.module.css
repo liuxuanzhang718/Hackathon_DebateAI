@@ -48,7 +48,7 @@ p {
 
 
 .swirlImage {
-  max-width: 500px;
+  max-width: 550px;
   width: 60%;
   height: auto;
   display: block;
@@ -57,7 +57,7 @@ p {
 }
 
 .swirlTitle {
-  margin-top: -250px;
+  margin-top: -300px;
   font-size: 28px;
   font-weight: 400;
   pointer-events: none;

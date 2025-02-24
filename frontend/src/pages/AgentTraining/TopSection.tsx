@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import styles from './T.module.css';
 import UserCard from "./UserCard";
+import SphereGIF from '../../assets/particles/2-1.gif'
+
 
 interface TopSectionProps {
   topic?: string;
@@ -9,7 +11,7 @@ interface TopSectionProps {
 const TopSection: React.FC<TopSectionProps> = ({
   topic = "\''Can EV Effectively Reduce the Negative Effect from Global Warming?\''",
 }) => {
-  const [isSpeaking, notSpeaking] = useState(false);
+  const [isSpeaking] = useState(false);
 
 
   return (

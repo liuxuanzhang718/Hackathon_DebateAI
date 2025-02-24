@@ -16,7 +16,7 @@ import QuestionIcon from '../../assets/icons/Question.png'
 /** Top */
 const TopSection: React.FC = () => {
   const navigate = useNavigate();
-  
+
   return (
     <div className={styles.topSection}>
       <div className={styles.topBar}>

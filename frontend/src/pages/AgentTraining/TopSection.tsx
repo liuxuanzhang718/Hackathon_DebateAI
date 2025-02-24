@@ -1,11 +1,12 @@
-import React, { useState } from 'react';
+import React, { useRef, useState } from 'react';
 import styles from './T.module.css';
 import UserCard from "./UserCard";
 import SphereGIF from '../../assets/particles/2-1.gif'
-
+import TapToTalk from './TapToTalk';
 
 interface TopSectionProps {
   topic?: string;
+
 }
 
 const TopSection: React.FC<TopSectionProps> = ({
@@ -31,11 +32,14 @@ const TopSection: React.FC<TopSectionProps> = ({
         </div>
 
         {/* Tap to Talk */}
-        <div className={styles.middleBall}>
-          <div className={styles.talkBall}>
-            <h3>Tap to Talk...</h3>
-          </div>
-        </div>
+        <TapToTalk
+          conversationId="conversation-id"
+          speakerId="speaker-id"
+          onStopRecording={() => {
+            console.log("Recording stopped");
+          }}
+        />
+
 
         {/* Speaker */}
         <div className={styles.speaker}>

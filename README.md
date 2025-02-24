@@ -69,6 +69,18 @@ The system then displays a clear logical flow diagram of the argument. The AI ag
 - User progress and achievement tracking
 - Debate session management
 
+## Architecture
+
+### Frontend:
+<div align="center">
+  <img src="images/Frontend.jpeg" alt="Main Page" width="600"/>
+</div>
+
+### Backend:
+<div align="center">
+  <img src="images/Backend.jpeg" alt="Main Page" width="600"/>
+</div>
+
 ## Getting Started
 
 ### Prerequisites

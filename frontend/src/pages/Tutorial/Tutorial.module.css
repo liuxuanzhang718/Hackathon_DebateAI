@@ -15,8 +15,6 @@ p {
   font-size: 1.2rem;
 }
 
-
-
 /* ============ Top ============ */
 .topSection {
   width: 100%;
@@ -134,36 +132,58 @@ p {
   align-items: center;
   gap: 16px;
   margin-left: 180px;
-  margin-top: 10px;
+  margin-top: 20px;
 }
 
 
 .rightLogic {
   display: flex;
-  flex-direction: column;
-  align-items: flex-end;
+  flex-direction: row;
+  align-items: flex-start;
   gap: 8px;
-  margin-top: 12px;
-  margin-right: 230px;
+  margin-top: 22px;
+  margin-right: 330px;
 
+}
+
+.questionIconWrapper {
+  margin-right: 12px;
+  display: flex;
+  align-items: center;
+}
+
+.questionIcon {
+  width: 55px;
+  height: 55px;
+}
+
+.rightLogicContent {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.rightLogicContent h3:first-child {
+  margin-bottom: 20px;
 }
 
 .buttonRow {
   display: flex;
   justify-content: center;
   gap: 26px;
-  margin-top: 15px;
+  margin-top: 30px;
 }
 
 .btn {
-  padding: 12px 24px;
+  font-weight: 450;
+  font-size: 24px;
+  padding: 6px 15px;
   background-color: #333;
   color: #fff;
   border: 1px solid #555;
   border: none;
   border-radius: 6px;
   cursor: pointer;
-  font-size: 1rem;
   transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
@@ -172,72 +192,3 @@ p {
   background-color: #444;
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
-
-
-/* ============ Bottom============
-.bottomSection {
-  width: 100%;
-  padding: 0px 24px;
-  box-sizing: border-box;
-  display: flex;
-  flex-direction: column;
-  gap: 20px;
-}
-
-.divider {
-  width: 100%;
-  height: 1px;
-  background-color: #555;
-  margin: 0px 0 12px;
-}
-
-.logicContainer {
-  width: 100%;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  flex-wrap: wrap;
-  gap: 20px;
-}
-
-
-.leftLogic {
-  margin-left: 100px;
-  margin-top: -50px;
-  display: flex;
-  align-items: center;
-  gap: 16px;
-}
-
-
-.rightLogic {
-  margin-top: 20px;
-  margin-right: 300px;
-  display: flex;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 8px;
-}
-
-
-.buttonRow {
-  display: flex;
-  justify-content: center;
-  gap: 26px;
-  margin-top: 12px;
-}
-
-
-.btn {
-  padding: 8px 16px;
-  background-color: #333;
-  color: #fff;
-  border: 1px solid #555;
-  border-radius: 4px;
-  cursor: pointer;
-  font-size: 1rem;
-}
-
-.btn:hover {
-  background-color: #444;
-} */

@@ -9,7 +9,7 @@ function App() {
     <HashRouter>
       <div>
         {/* Main Content */}
-        <main style={{ padding: "10px" }}>
+        <main>
           <Routes>
             <Route path="/" element={<Lobby />} />
             <Route path="/tutorial" element={<Tutorial />} />

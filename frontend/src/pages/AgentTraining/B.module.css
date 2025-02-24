@@ -1,0 +1,25 @@
+/* ==== Bottom Section ==== */
+.bottomSection {
+    width: 100%;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 20px;
+    color: #ffffff;
+}
+
+.resultsContainer {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+}
+
+.resultBox {
+    flex: 1;
+    min-width: 200px;
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 20px;
+}
+
+.resultBox h2 {
+    margin-bottom: 10px;
+}

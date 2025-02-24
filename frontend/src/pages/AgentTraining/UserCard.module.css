@@ -1,0 +1,68 @@
+.card {
+    background-color: #000;
+    border-radius: 12px;
+    box-shadow: 0 0 8px rgba(255, 255, 255, 0.1);
+  
+    width: 200px;
+    padding: 16px;
+  
+    color: #fff;
+    font-family: sans-serif;
+    position: relative;
+  }
+  
+  .cardHeader {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+  }
+  
+  .title {
+    margin: 0;
+    font-size: 1.2rem;
+    margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  
+  .count {
+    font-size: 0.875rem;
+  }
+  
+
+  .chatBubble {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    padding: 8px;
+    display: flex;
+    align-items: center;
+  }
+  
+
+  .userImage {
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    margin-right: 8px;
+    object-fit: cover;
+  }
+
+  .speakingText {
+    font-size: 0.875rem;
+    color: #fff;
+    animation: pulse 1s infinite;
+  }
+  
+
+  @keyframes pulse {
+    0% {
+      opacity: 0.7;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0.7;
+    }
+  }
+  

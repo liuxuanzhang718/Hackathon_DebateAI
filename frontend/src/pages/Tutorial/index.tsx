@@ -1,7 +1,7 @@
 import React from 'react'
 import { Navigate, useNavigate } from 'react-router-dom';
 
-import styles from './Tutorial.module.css'; 
+import styles from './Tutorial.module.css';
 
 import NotIcon from '../../assets/icons/Not.svg';
 import OrIcon from '../../assets/icons/Or.svg';
@@ -11,14 +11,16 @@ import ImplyIcon from '../../assets/icons/Imply.svg';
 import ExitIcon from '../../assets/icons/Exit.svg';
 import SmallSwirlIcon from '../../assets/images/image2-1.png'
 import SwirlImage from '../../assets/images/image2.png';
+import QuestionIcon from '../../assets/icons/Question.png'
 
 /** Top */
 const TopSection: React.FC = () => {
   const navigate = useNavigate();
+  
   return (
     <div className={styles.topSection}>
       <div className={styles.topBar}>
-      <img
+        <img
           className={styles.smallSwirlIcon}
           src={SmallSwirlIcon}
           alt="Small Swirl Icon"
@@ -111,8 +113,8 @@ const BottomSection: React.FC = () => {
     <div className={styles.bottomSection}>
 
       <div className={styles.divider} />
-      <div className={styles.logicContainer}>
 
+      <div className={styles.logicContainer}>
         {/* Left */}
         <div className={styles.leftLogic}>
           <h3>Have Dessert</h3>
@@ -126,10 +128,20 @@ const BottomSection: React.FC = () => {
 
         {/* Right*/}
         <div className={styles.rightLogic}>
-          <h3>Q: Emily Happy ~ Have Dessert</h3>
-          <div className={styles.buttonRow}>
-            <button className={styles.btn}>True</button>
-            <button className={styles.btn}>False</button>
+          <div className={styles.questionIconWrapper}>
+            <img
+              className={styles.questionIcon}
+              src={QuestionIcon}
+              alt="Question Icon"
+            />
+          </div>
+          <div className={styles.rightLogicContent}>
+            <h3>Emily Happy</h3>
+            <h3>Have Dessert</h3>
+            <div className={styles.buttonRow}>
+              <button className={styles.btn}>True</button>
+              <button className={styles.btn}>False</button>
+            </div>
           </div>
         </div>
 

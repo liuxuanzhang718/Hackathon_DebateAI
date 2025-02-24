@@ -1,46 +1,27 @@
-import React, { useState } from 'react'
-// import './AgentTraining.css'
+import React from 'react';
+import { useNavigate } from 'react-router-dom';
+
+import TopSection from './TopSection';
+import BottomSection from './BottomSection';
+
+import styles from './Agent.module.css';
 
 const AgentTraining: React.FC = () => {
-  const [topic, setTopic] = useState('Global Warming')
-  const [supportingPoints, setSupportingPoints] = useState<string[]>([])
-  const [opposingPoints, setOpposingPoints] = useState<string[]>([])
-
-  // useEffect(() => {
-  //   axios.get('/api/agent-training/topics').then(res => {
-  //     ...
-  //   })
-  // }, [])
-
-  const handleTrain = () => {
-    console.log('Training agent on topic:', topic)
-  }
+  const navigate = useNavigate();
 
   return (
-    <div className="agent-training-container">
-      <h2>Agent Training</h2>
-      <div>
-        <label>Select Topic: </label>
-        <select
-          value={topic}
-          onChange={(e) => setTopic(e.target.value)}
-        >
-          <option value="Global Warming">Global Warming</option>
-          <option value="Carbon Emission">Carbon Emission</option>
-          <option value="Fuel Cost">Fuel Cost</option>
-        </select>
+    <div className={styles.agentTraining}>
+      <div style={{ flex: 3 }}>
+        <TopSection />
       </div>
-      <div>
-        <p>Supporting Points</p>
-        {/*  */}
-      </div>
-      <div>
-        <p>Opposing Points</p>
-        
-      </div>
-      <button onClick={handleTrain}>Start Training</button>
-    </div>
-  )
-}
 
-export default AgentTraining
+      <div className={styles.divider} />
+
+      <div style={{ flex: 1 }}>
+        <BottomSection />
+      </div>
+    </div>
+  );
+};
+
+export default AgentTraining;

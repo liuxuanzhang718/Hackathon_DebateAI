@@ -1,0 +1,83 @@
+# Environment
+.env
+venv/
+env/
+.venv/
+ENV/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Credentials and Secrets
+credentials/
+*.pem
+*.key
+*.cert
+
+# Storage
+audio_storage/
+temp_storage/
+
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+.project
+.pydevproject
+.settings/
+
+# System
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+log/
+
+# Test
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+# 本地配置文件
+config.local.py
+*.local.py
+.env.local
+
+# 日志文件
+*.log
+logs/
+
+# 数据库
+*.db
+*.sqlite3
+
+# New additions
+credentials/*.json 

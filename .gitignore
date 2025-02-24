@@ -1,3 +1,10 @@
+# Environment
+.env
+venv/
+env/
+.venv/
+ENV/
+
 # Python
 __pycache__/
 *.py[cod]
@@ -20,58 +27,57 @@ wheels/
 .installed.cfg
 *.egg
 
-# 虚拟环境
-venv/
-env/
-ENV/
-.env
-.venv
-env.bak/
-venv.bak/
+# Credentials and Secrets
+credentials/
+*.pem
+*.key
+*.cert
+
+# Storage
+audio_storage/
+temp_storage/
 
 # IDE
 .idea/
 .vscode/
 *.swp
 *.swo
-.DS_Store
+.project
+.pydevproject
+.settings/
 
-# 日志文件
+# System
+.DS_Store
+Thumbs.db
+
+# Logs
 *.log
 logs/
+log/
+
+# Test
+.coverage
+.pytest_cache/
+htmlcov/
+.tox/
+.coverage.*
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
 
 # 本地配置文件
 config.local.py
 *.local.py
 .env.local
 
-# 测试覆盖率
-.coverage
-htmlcov/
-.tox/
-.nox/
-.coverage.*
-.cache
-nosetests.xml
-coverage.xml
-*.cover
-*.py,cover
-.hypothesis/
-.pytest_cache/
-
-# Jupyter Notebook
-.ipynb_checkpoints
-
-# API keys 和敏感信息
-*.pem
-*.key
-secrets.json
-credentials.json
+# 日志文件
+*.log
+logs/
 
 # 数据库
 *.db
 *.sqlite3
 
 # New additions
-.env
 credentials/*.json 

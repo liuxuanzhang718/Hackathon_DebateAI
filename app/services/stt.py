@@ -1,10 +1,13 @@
 from google.cloud import speech
 import io
 from pathlib import Path
-from ..config import settings
 import logging
 import os
 import traceback
+from dotenv import load_dotenv
+
+# Load environment variables
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)
@@ -13,23 +16,27 @@ logger = logging.getLogger(__name__)
 class STTService:
     def __init__(self):
         try:
-            credentials_path = os.environ.get('GOOGLE_APPLICATION_CREDENTIALS')
+            credentials_path = os.getenv('GOOGLE_APPLICATION_CREDENTIALS')
             logger.info(f"Initializing STT service with credentials from: {credentials_path}")
             
             if not credentials_path or not os.path.exists(credentials_path):
-                logger.error(f"Credentials file not found at: {credentials_path}")
-                raise FileNotFoundError(f"Google Cloud credentials file not found at: {credentials_path}")
+                logger.warning(f"Credentials file not found at: {credentials_path}")
+                self.client = None
+                return
                 
             self.client = speech.SpeechClient()
             logger.info("Successfully initialized STT service")
         except Exception as e:
             logger.error(f"Failed to initialize STT service: {str(e)}\n{traceback.format_exc()}")
-            raise
+            self.client = None
 
     async def transcribe_audio(self, audio_file_path: Path) -> str:
         """
         Transcribe audio file to text using Google Cloud Speech-to-Text
         """
+        if not self.client:
+            raise RuntimeError("STT service not properly initialized")
+            
         try:
             logger.info(f"Starting transcription of file: {audio_file_path}")
             
@@ -60,8 +67,8 @@ class STTService:
             try:
                 config = speech.RecognitionConfig(
                     encoding=speech.RecognitionConfig.AudioEncoding.LINEAR16,
-                    sample_rate_hertz=22050,
-                    language_code="en-US",
+                    sample_rate_hertz=int(os.getenv('STT_SAMPLE_RATE', '22050')),
+                    language_code=os.getenv('STT_LANGUAGE', 'en-US'),
                     enable_automatic_punctuation=True,
                     model="latest_long",
                     use_enhanced=True,
